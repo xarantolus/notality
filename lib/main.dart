@@ -16,10 +16,17 @@ class NotesApp extends StatelessWidget {
       title: 'Notality',
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.amber,
+        primarySwatch: Colors.red,
+        colorScheme: ColorScheme.fromSwatch(
+          accentColor: Colors.amber,
+        ),
+        primaryColor: Colors.red,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        primarySwatch: Colors.amber,
+        backgroundColor: Colors.black45,
+        primaryColor: Colors.red,
       ),
       home: NotesPage(),
     );
@@ -46,6 +53,8 @@ class _NotesPageState extends State<NotesPage> {
         future: NotesService.readNotes(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            widget.notes = snapshot.data!;
+
             return NoteList(snapshot.data!);
           } else {
             // Just a loading scren
@@ -58,16 +67,25 @@ class _NotesPageState extends State<NotesPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {
-          // var note = Note(
-          //   type: "text",
-          //   text: "Custom text",
-          //   lastEditDate: DateTime.now(),
-          //   title: "Newly added note"
-          // )
+        onPressed: () async {
+          var note = Note(
+            type: "text",
+            title: "Newly added note",
+            text:
+                "Custom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\n",
+            lastEditDate: DateTime.now(),
+          );
+
+          widget.notes!.add(note);
+
+          await NotesService.writeNotes(widget.notes!);
+
+          // Make sure the futureBuilder gets updated notes data; it does reload from disk though
+          setState(() {});
         },
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
+        backgroundColor: Colors.orange,
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

@@ -14,29 +14,25 @@ class NotesService {
 
   /// Read all saved notes from the notes file.
   static Future<List<Note>> readNotes() async {
-    await fileMutex.acquire();
+    return fileMutex.protect(() async {
+      List<Note> notes;
 
-    List<Note> notes;
+      try {
+        var fp = await getNotesFilePath();
+        var content = await File(fp).readAsString();
 
-    try {
-      var fp = await getNotesFilePath();
-      var content = await File(fp).readAsString();
+        notes = notesFileContentFromJson(content).notes;
+      } catch (e) {
+        notes = [];
+      }
 
-      notes = notesFileContentFromJson(content).notes;
-    } catch (e) {
-      notes = [];
-    } finally {
-      fileMutex.release();
-    }
-
-    return notes;
+      return notes;
+    });
   }
 
   /// Write the given notes to the notes file, overwriting any old changes
   static Future<void> writeNotes(List<Note> notes) async {
-    await fileMutex.acquire();
-
-    try {
+    return fileMutex.protect(() async {
       var fp = await getNotesFilePath();
 
       var json = notesFileContentToJson(NotesFileContent(notes: notes));
@@ -46,11 +42,6 @@ class NotesService {
       await tmpFile.writeAsString(json, flush: true);
 
       await tmpFile.rename(fp);
-    } catch (e) {
-      fileMutex.release();
-      rethrow;
-    } finally {
-      fileMutex.release();
-    }
+    });
   }
 }

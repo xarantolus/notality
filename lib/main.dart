@@ -14,11 +14,9 @@ class NotesApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.amber,
-        primaryColor: Colors.amber,
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.amber,
       ),
       home: const NotesPage(),
     );

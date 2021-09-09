@@ -21,13 +21,15 @@ class NotesApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
       ),
-      home: const NotesPage(),
+      home: NotesPage(),
     );
   }
 }
 
 class NotesPage extends StatefulWidget {
-  const NotesPage({Key? key}) : super(key: key);
+  NotesPage({Key? key}) : super(key: key);
+
+  List<Note>? notes;
 
   @override
   State<NotesPage> createState() => _NotesPageState();
@@ -41,23 +43,29 @@ class _NotesPageState extends State<NotesPage> {
         title: const Text("Notality"),
       ),
       body: FutureBuilder<List<Note>>(
-          future: NotesService.readNotes(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return NoteList(snapshot.data!);
-            } else {
-              // Just a loading scren
-              return const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.green,
-                  ),
-                ),
-              );
-            }
-          }),
+        future: NotesService.readNotes(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return NoteList(snapshot.data!);
+          } else {
+            // Just a loading scren
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.green,
+              ),
+            );
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
+        onPressed: () => {
+          // var note = Note(
+          //   type: "text",
+          //   text: "Custom text",
+          //   lastEditDate: DateTime.now(),
+          //   title: "Newly added note"
+          // )
+        },
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

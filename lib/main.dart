@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:notality/models/text_note.dart';
+import 'package:notality/screens/note_list.dart';
 import 'package:notality/services/notes_service.dart';
 
 void main() {
@@ -44,7 +44,7 @@ class _NotesPageState extends State<NotesPage> {
           future: NotesService.readNotes(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return Text('${snapshot.data!.length}');
+              return NoteList(snapshot.data!);
             } else {
               // Just a loading scren
               return const Scaffold(
@@ -58,7 +58,7 @@ class _NotesPageState extends State<NotesPage> {
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {},
-        tooltip: 'Increment',
+        tooltip: 'Add Note',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

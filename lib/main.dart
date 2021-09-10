@@ -73,7 +73,12 @@ class _NotesPageState extends State<NotesPage> {
               MaterialPageRoute<Note>(
                   builder: (context) => NoteEditPage(Note.empty())));
 
-          widget.notes!.add(newNote!);
+          // Don't save empty notes
+          if (newNote!.text.isEmpty && newNote.title.isEmpty) {
+            return;
+          }
+
+          widget.notes!.add(newNote);
 
           await NotesService.writeNotes(widget.notes!);
 

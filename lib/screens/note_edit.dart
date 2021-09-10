@@ -45,8 +45,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
             Note(
               type: "text",
               lastEditDate: DateTime.now(),
-              title: titleController!.text,
-              text: bodyController!.text,
+              title: titleController!.text.trim(),
+              text: bodyController!.text.trim(),
             ),
           );
           return false;

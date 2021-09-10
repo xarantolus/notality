@@ -1,4 +1,4 @@
-package com.example.notality
+package io.github.xarantolus.notality
 
 import io.flutter.embedding.android.FlutterActivity
 

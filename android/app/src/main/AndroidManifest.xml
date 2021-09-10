@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notality">
+    package="io.github.xarantolus.notality">
    <application
         android:label="notality"
         android:icon="@mipmap/ic_launcher">

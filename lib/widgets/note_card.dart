@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -12,6 +14,25 @@ class NoteCard extends StatefulWidget {
 }
 
 class _NoteCardState extends State<NoteCard> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Update time every second
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer!.cancel();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(

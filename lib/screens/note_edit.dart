@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +20,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
 
   String? _initialTitle;
   String? _initialText;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -41,10 +44,17 @@ class _NoteEditPageState extends State<NoteEditPage> {
     bodyController!.addListener(() {
       setState(() {});
     });
+
+    // Make sure the displayed edit time syncs with the system clock
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    _timer!.cancel();
+
     titleController!.dispose();
     bodyController!.dispose();
 

@@ -95,12 +95,15 @@ class NotesService {
     }, true);
   }
 
-  /// replaceNote replaces note at index with the given note
+  /// replaceNote deletes the note at index and replaces it with the given note n.
+  /// The new note is placed first in the list
   Future<void> replaceNote(Note n, int index) async {
     await _protectIfNecessary(() async {
       var notes = await readNotes(false);
 
-      notes[index] = n;
+      notes.removeAt(index);
+
+      notes.insert(0, n);
 
       await writeNotes(notes, false);
     }, true);

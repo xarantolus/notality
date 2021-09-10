@@ -39,7 +39,7 @@ class NotesApp extends StatelessWidget {
 class NotesPage extends StatefulWidget {
   NotesPage({Key? key}) : super(key: key);
 
-  final NotesService notes = NotesService();
+  final NotesService service = NotesService();
 
   @override
   State<NotesPage> createState() => _NotesPageState();
@@ -51,7 +51,7 @@ class _NotesPageState extends State<NotesPage> {
     super.initState();
 
     // Let the notes service call setState whenever the notes are updated
-    widget.notes.setCallback(() {
+    widget.service.setCallback(() {
       setState(() {});
     });
   }
@@ -63,10 +63,10 @@ class _NotesPageState extends State<NotesPage> {
         title: const Text("Notality"),
       ),
       body: FutureBuilder<List<Note>>(
-        future: widget.notes.readNotes(),
+        future: widget.service.readNotes(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return NoteList(widget.notes, snapshot.data!);
+            return NoteList(widget.service);
           } else if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);
           } else {
@@ -87,7 +87,7 @@ class _NotesPageState extends State<NotesPage> {
             return;
           }
 
-          widget.notes.addNote(newNote);
+          widget.service.addNote(newNote);
 
           // Make sure the futureBuilder gets updated notes data; it does reload from disk though
         },

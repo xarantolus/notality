@@ -6,22 +6,33 @@ import 'package:mutex/mutex.dart';
 class NotesService {
   static final fileMutex = Mutex();
 
-  static Future<String> getNotesFilePath() async {
-    Directory dir = await getApplicationDocumentsDirectory();
-
-    return "${dir.path}/notes.json";
-  }
-
   List<Note>? _notes;
   Function? _callback;
 
+  // setCallback sets the callback that is called whenever the managed notes are updated
   void setCallback(Function cb) {
     _callback = cb;
   }
 
+  // protectIfNecessary runs criticalSection, locking with fileMutex if lock is true
+  Future<T> _protectIfNecessary<T>(
+      Future<T> Function() criticalSection, bool lock) async {
+    if (lock) {
+      return fileMutex.protect(() => criticalSection());
+    } else {
+      return await criticalSection();
+    }
+  }
+
+  // getNotesFilePath returns the file path for the notes file
+  Future<String> getNotesFilePath() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    return "${dir.path}/notes.json";
+  }
+
   /// Read all saved notes from the notes file.
-  Future<List<Note>> readNotes() async {
-    return fileMutex.protect(() async {
+  Future<List<Note>> readNotes([bool lock = true]) async {
+    return _protectIfNecessary(() async {
       if (_notes == null) {
         try {
           var fp = await getNotesFilePath();
@@ -33,12 +44,14 @@ class NotesService {
         }
       }
       return _notes!;
-    });
+    }, lock);
   }
 
   /// Write the given notes to the notes file, overwriting any old changes
-  Future<void> writeNotes(List<Note> notes) async {
-    await fileMutex.protect(() async {
+  Future<void> writeNotes(List<Note> notes, [bool lock = true]) async {
+    await _protectIfNecessary(() async {
+      _notes = notes;
+
       var fp = await getNotesFilePath();
 
       var json = notesFileContentToJson(NotesFileContent(notes: notes));
@@ -48,24 +61,30 @@ class NotesService {
       await tmpFile.writeAsString(json, flush: true);
 
       await tmpFile.rename(fp);
-    });
+    }, lock);
 
     _callback?.call();
   }
 
+  /// deleteNote deletes the note with the given index
   Future<void> deleteNote(int index) async {
-    // TODO: Also lock this section in the mutex without dead-locking ourselves
-    var notes = await readNotes();
-    notes.removeAt(index);
-    await writeNotes(notes);
+    await _protectIfNecessary(() async {
+      var notes = await readNotes(false);
+
+      notes.removeAt(index);
+
+      await writeNotes(notes, false);
+    }, true);
   }
 
+  /// addNote adds the given note at index
   Future<void> addNote(Note n, [int index = 0]) async {
-    // TODO: Also lock this section in the mutex without dead-locking ourselves
-    var notes = await readNotes();
+    await _protectIfNecessary(() async {
+      var notes = await readNotes(false);
 
-    notes.insert(index, n);
+      notes.insert(index, n);
 
-    await writeNotes(notes);
+      await writeNotes(notes, false);
+    }, true);
   }
 }

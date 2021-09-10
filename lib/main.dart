@@ -20,7 +20,7 @@ class NotesApp extends StatelessWidget {
           brightness: Brightness.light,
           primary: Colors.amber,
           secondary: Colors.amberAccent,
-          surface: Colors.grey[300],
+          surface: Colors.grey[200],
         ),
       ),
       darkTheme: ThemeData.from(
@@ -88,12 +88,10 @@ class _NotesPageState extends State<NotesPage> {
           }
 
           widget.service.addNote(newNote);
-
-          // Make sure the futureBuilder gets updated notes data; it does reload from disk though
         },
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

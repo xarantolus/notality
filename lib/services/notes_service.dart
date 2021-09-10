@@ -12,27 +12,33 @@ class NotesService {
     return "${dir.path}/notes.json";
   }
 
+  List<Note>? _notes;
+  Function? _callback;
+
+  void setCallback(Function cb) {
+    _callback = cb;
+  }
+
   /// Read all saved notes from the notes file.
-  static Future<List<Note>> readNotes() async {
+  Future<List<Note>> readNotes() async {
     return fileMutex.protect(() async {
-      List<Note> notes;
+      if (_notes == null) {
+        try {
+          var fp = await getNotesFilePath();
+          var content = await File(fp).readAsString();
 
-      try {
-        var fp = await getNotesFilePath();
-        var content = await File(fp).readAsString();
-
-        notes = notesFileContentFromJson(content).notes;
-      } catch (e) {
-        notes = [];
+          _notes = notesFileContentFromJson(content).notes;
+        } catch (e) {
+          _notes = [];
+        }
       }
-
-      return notes;
+      return _notes!;
     });
   }
 
   /// Write the given notes to the notes file, overwriting any old changes
-  static Future<void> writeNotes(List<Note> notes) async {
-    return fileMutex.protect(() async {
+  Future<void> writeNotes(List<Note> notes) async {
+    await fileMutex.protect(() async {
       var fp = await getNotesFilePath();
 
       var json = notesFileContentToJson(NotesFileContent(notes: notes));
@@ -43,5 +49,23 @@ class NotesService {
 
       await tmpFile.rename(fp);
     });
+
+    _callback?.call();
+  }
+
+  Future<void> deleteNote(int index) async {
+    // TODO: Also lock this section in the mutex without dead-locking ourselves
+    var notes = await readNotes();
+    notes.removeAt(index);
+    await writeNotes(notes);
+  }
+
+  Future<void> addNote(Note n, [int index = 0]) async {
+    // TODO: Also lock this section in the mutex without dead-locking ourselves
+    var notes = await readNotes();
+
+    notes.insert(index, n);
+
+    await writeNotes(notes);
   }
 }

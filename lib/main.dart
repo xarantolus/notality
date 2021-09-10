@@ -39,13 +39,22 @@ class NotesApp extends StatelessWidget {
 class NotesPage extends StatefulWidget {
   NotesPage({Key? key}) : super(key: key);
 
-  List<Note>? notes;
+  final NotesService notes = NotesService();
 
   @override
   State<NotesPage> createState() => _NotesPageState();
 }
 
 class _NotesPageState extends State<NotesPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    widget.notes.setCallback(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,12 +63,10 @@ class _NotesPageState extends State<NotesPage> {
       ),
       body: FutureBuilder<List<Note>>(
         future:
-            Future.delayed(const Duration(seconds: 3), NotesService.readNotes),
+            Future.delayed(const Duration(seconds: 3), widget.notes.readNotes),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            widget.notes = snapshot.data!;
-
-            return NoteList(snapshot.data!);
+            return NoteList(widget.notes, snapshot.data!);
           } else {
             // Just a loading scren
             return const Center(
@@ -79,9 +86,7 @@ class _NotesPageState extends State<NotesPage> {
             return;
           }
 
-          widget.notes!.insert(0, newNote);
-
-          await NotesService.writeNotes(widget.notes!);
+          widget.notes.addNote(newNote);
 
           // Make sure the futureBuilder gets updated notes data; it does reload from disk though
           setState(() {});

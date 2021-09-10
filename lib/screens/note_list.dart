@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
+import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/note_card.dart';
 
 class NoteList extends StatefulWidget {
-  NoteList(this.notes);
+  NoteList(this.service, this.notes);
+
+  NotesService service;
 
   List<Note> notes;
 
@@ -39,14 +42,14 @@ class _NoteListState extends State<NoteList> {
                   label: "Undo",
                   onPressed: () {
                     setState(() {
-                      widget.notes.insert(index, item);
+                      widget.service.addNote(item, index);
                     });
                   },
                 ),
               ));
 
               setState(() {
-                widget.notes.removeAt(index);
+                widget.service.deleteNote(index);
               });
             },
           );

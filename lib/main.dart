@@ -67,6 +67,8 @@ class _NotesPageState extends State<NotesPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return NoteList(widget.notes, snapshot.data!);
+          } else if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error!);
           } else {
             // Just a loading scren
             return const Center(

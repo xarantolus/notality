@@ -25,10 +25,11 @@ class NotesApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.from(
         colorScheme: const ColorScheme.dark().copyWith(
-            brightness: Brightness.dark,
-            primary: Colors.amber,
-            secondary: Colors.amberAccent,
-            surface: Colors.grey[900]),
+          brightness: Brightness.dark,
+          primary: Colors.amber,
+          secondary: Colors.amberAccent,
+          surface: Colors.grey[900],
+        ),
       ),
       home: NotesPage(),
     );

@@ -82,6 +82,13 @@ class NotesService {
     await _protectIfNecessary(() async {
       var notes = await readNotes(false);
 
+      // Snackbar restoring is kind of racy, so sometimes we delete item 2 and 1, then
+      // we click the restore button, which will want to insert at index 2 on a list with one element.
+      // Since that doesn't work, we set the maximum index here and restore anyways, at the wrong position
+      if (index > notes.length) {
+        index = notes.length;
+      }
+
       notes.insert(index, n);
 
       await writeNotes(notes, false);

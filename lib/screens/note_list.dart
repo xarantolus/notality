@@ -37,20 +37,16 @@ class _NoteListState extends State<NoteList> {
 
             onDismissed: (direction) async {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('$index dismissed'),
+                content: const Text('Deleted note'),
                 action: SnackBarAction(
-                  label: "Undo",
+                  label: "Restore",
                   onPressed: () {
-                    setState(() {
-                      widget.service.addNote(item, index);
-                    });
+                    widget.service.addNote(item, index);
                   },
                 ),
               ));
 
-              setState(() {
-                widget.service.deleteNote(index);
-              });
+              widget.service.deleteNote(index);
             },
           );
         },

@@ -50,6 +50,7 @@ class _NotesPageState extends State<NotesPage> {
   void initState() {
     super.initState();
 
+    // Let the notes service call setState whenever the notes are updated
     widget.notes.setCallback(() {
       setState(() {});
     });
@@ -62,8 +63,7 @@ class _NotesPageState extends State<NotesPage> {
         title: const Text("Notality"),
       ),
       body: FutureBuilder<List<Note>>(
-        future:
-            Future.delayed(const Duration(seconds: 3), widget.notes.readNotes),
+        future: widget.notes.readNotes(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return NoteList(widget.notes, snapshot.data!);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class NoteCard extends StatefulWidget {
   NoteCard({Key? key, required this.note}) : super(key: key);
@@ -43,6 +44,9 @@ class _NoteCardState extends State<NoteCard> {
                     ),
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                   ),
+            trailing: Text(
+              timeago.format(widget.note.lastEditDate),
+            ),
           ),
         ),
       ),

@@ -16,25 +16,31 @@ class _NoteCardState extends State<NoteCard> {
     return Container(
       padding: const EdgeInsets.all(2),
       child: Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).cardColor,
         child: Align(
           alignment: Alignment.topLeft,
           child: ListTile(
-            title: Container(
-              child: Text(
-                widget.note.title,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              padding: const EdgeInsets.all(4),
-            ),
-            subtitle: Container(
-              child: Text(
-                widget.note.text,
-                style: const TextStyle(fontSize: 15),
-              ),
-              padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-            ),
+            title: widget.note.title.isEmpty
+                ? null
+                : Container(
+                    child: Text(
+                      widget.note.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    padding: const EdgeInsets.all(4),
+                  ),
+            subtitle: widget.note.text.isEmpty
+                ? null
+                : Container(
+                    child: Text(
+                      widget.note.text,
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                  ),
           ),
         ),
       ),

@@ -17,17 +17,19 @@ class NotesApp extends StatelessWidget {
       title: 'Notality',
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.red,
-        colorScheme: ColorScheme.fromSwatch(
-          accentColor: Colors.amber,
+        colorScheme: const ColorScheme.light().copyWith(
+          primary: Colors.green,
+          secondary: Colors.greenAccent,
         ),
-        primaryColor: Colors.red,
+        cardColor: Colors.grey[300],
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.amber,
-        backgroundColor: Colors.black45,
-        primaryColor: Colors.red,
+        colorScheme: const ColorScheme.dark().copyWith(
+          primary: Colors.amber,
+          secondary: Colors.amberAccent,
+        ),
+        cardColor: Colors.black54,
       ),
       home: NotesPage(),
     );
@@ -51,7 +53,8 @@ class _NotesPageState extends State<NotesPage> {
         title: const Text("Notality"),
       ),
       body: FutureBuilder<List<Note>>(
-        future: NotesService.readNotes(),
+        future:
+            Future.delayed(const Duration(seconds: 3), NotesService.readNotes),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             widget.notes = snapshot.data!;
@@ -60,9 +63,7 @@ class _NotesPageState extends State<NotesPage> {
           } else {
             // Just a loading scren
             return const Center(
-              child: CircularProgressIndicator(
-                color: Colors.green,
-              ),
+              child: CircularProgressIndicator(),
             );
           }
         },
@@ -78,7 +79,7 @@ class _NotesPageState extends State<NotesPage> {
             return;
           }
 
-          widget.notes!.add(newNote);
+          widget.notes!.insert(0, newNote);
 
           await NotesService.writeNotes(widget.notes!);
 
@@ -87,7 +88,6 @@ class _NotesPageState extends State<NotesPage> {
         },
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
-        backgroundColor: Colors.orange,
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

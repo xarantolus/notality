@@ -15,21 +15,20 @@ class NotesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Notality',
-      theme: ThemeData(
-        brightness: Brightness.light,
+      theme: ThemeData.from(
         colorScheme: const ColorScheme.light().copyWith(
-          primary: Colors.green,
-          secondary: Colors.greenAccent,
-        ),
-        cardColor: Colors.grey[300],
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: const ColorScheme.dark().copyWith(
+          brightness: Brightness.light,
           primary: Colors.amber,
           secondary: Colors.amberAccent,
+          surface: Colors.grey[300],
         ),
-        cardColor: Colors.black54,
+      ),
+      darkTheme: ThemeData.from(
+        colorScheme: const ColorScheme.dark().copyWith(
+            brightness: Brightness.dark,
+            primary: Colors.amber,
+            secondary: Colors.amberAccent,
+            surface: Colors.grey[900]),
       ),
       home: NotesPage(),
     );

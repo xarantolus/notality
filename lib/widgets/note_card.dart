@@ -37,6 +37,8 @@ class _NoteCardState extends State<NoteCard> {
                 : Container(
                     child: Text(
                       widget.note.text,
+                      maxLines: 12,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(fontSize: 15),
                     ),
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),

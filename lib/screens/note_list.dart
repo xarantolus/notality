@@ -18,7 +18,38 @@ class _NoteListState extends State<NoteList> {
       child: ListView.builder(
         itemCount: widget.notes.length,
         itemBuilder: (context, index) {
-          return Center(child: NoteCard(note: widget.notes[index]));
+          final item = widget.notes[index];
+
+          return Dismissible(
+            key: UniqueKey(),
+            child: NoteCard(note: item),
+
+            // Allow swiping left or right
+            direction: DismissDirection.horizontal,
+
+            background: Container(
+              color: Colors.red,
+              child: const Icon(Icons.delete_forever),
+            ),
+
+            onDismissed: (direction) async {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('$index dismissed'),
+                action: SnackBarAction(
+                  label: "Undo",
+                  onPressed: () {
+                    setState(() {
+                      widget.notes.insert(index, item);
+                    });
+                  },
+                ),
+              ));
+
+              setState(() {
+                widget.notes.removeAt(index);
+              });
+            },
+          );
         },
       ),
     );

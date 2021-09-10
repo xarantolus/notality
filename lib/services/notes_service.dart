@@ -94,4 +94,15 @@ class NotesService {
       await writeNotes(notes, false);
     }, true);
   }
+
+  /// replaceNote replaces note at index with the given note
+  Future<void> replaceNote(Note n, int index) async {
+    await _protectIfNecessary(() async {
+      var notes = await readNotes(false);
+
+      notes[index] = n;
+
+      await writeNotes(notes, false);
+    }, true);
+  }
 }

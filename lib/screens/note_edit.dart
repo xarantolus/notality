@@ -3,9 +3,10 @@ import 'package:notality/models/text_note.dart';
 import 'package:intl/intl.dart';
 
 class NoteEditPage extends StatefulWidget {
-  NoteEditPage(this.note, {Key? key}) : super(key: key);
+  NoteEditPage(this.note, this.autofocus, {Key? key}) : super(key: key);
 
   Note note;
+  bool autofocus;
 
   @override
   _NoteEditPageState createState() => _NoteEditPageState();
@@ -24,7 +25,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
     ));
 
     bodyController = TextEditingController.fromValue(TextEditingValue(
-      text: widget.note.title,
+      text: widget.note.text,
     ));
   }
 
@@ -40,15 +41,21 @@ class _NoteEditPageState extends State<NoteEditPage> {
       appBar: AppBar(),
       body: WillPopScope(
         onWillPop: () async {
-          Navigator.pop(
-            context,
-            Note(
-              type: "text",
-              lastEditDate: DateTime.now(),
-              title: titleController!.text.trim(),
-              text: bodyController!.text.trim(),
-            ),
+          var newNote = Note(
+            type: "text",
+            lastEditDate: DateTime.now(),
+            title: titleController!.text.trim(),
+            text: bodyController!.text.trim(),
           );
+          // If we got any content in the node, we return it; else we return null
+          if (newNote.text.isEmpty && newNote.title.isEmpty) {
+            Navigator.pop(context, null);
+          } else {
+            Navigator.pop(
+              context,
+              newNote,
+            );
+          }
           return false;
         },
         child: Container(
@@ -57,7 +64,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
             children: [
               TextField(
                 controller: titleController,
-                autofocus: true,
+                autofocus: widget.autofocus,
                 style: const TextStyle(
                   fontSize: 24,
                 ),

@@ -81,17 +81,15 @@ class _NotesPageState extends State<NotesPage> {
         onPressed: () async {
           var newNote = await Navigator.of(context).push(
               MaterialPageRoute<Note>(
-                  builder: (context) => NoteEditPage(Note.empty())));
+                  builder: (context) => NoteEditPage(Note.empty(), true)));
 
-          // Don't save empty notes
-          if (newNote!.text.isEmpty && newNote.title.isEmpty) {
+          if (newNote == null) {
             return;
           }
 
           widget.notes.addNote(newNote);
 
           // Make sure the futureBuilder gets updated notes data; it does reload from disk though
-          setState(() {});
         },
         tooltip: 'Add Note',
         child: const Icon(Icons.add),

@@ -41,6 +41,8 @@ class Note {
         title = "",
         lastEditDate = DateTime.now();
 
+  bool isEmpty() => text.isEmpty && title.isEmpty;
+
   String type;
   String title;
   DateTime lastEditDate;

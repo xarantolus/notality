@@ -16,19 +16,31 @@ class _NoteEditPageState extends State<NoteEditPage> {
   TextEditingController? titleController;
   TextEditingController? bodyController;
 
+  String? _initialTitle;
+  String? _initialText;
+
   @override
   void initState() {
     super.initState();
 
+    if (!widget.note.isEmpty()) {
+      _initialTitle = widget.note.title;
+      _initialText = widget.note.text;
+    }
+
     titleController = TextEditingController.fromValue(TextEditingValue(
       text: widget.note.title,
     ));
-    titleController!.addListener(changed);
+    titleController!.addListener(() {
+      setState(() {});
+    });
 
     bodyController = TextEditingController.fromValue(TextEditingValue(
       text: widget.note.text,
     ));
-    bodyController!.addListener(changed);
+    bodyController!.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -45,13 +57,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
     return formatter.format(d);
   }
 
-  bool _didChange = false;
-
-  void changed() {
-    setState(() {
-      _didChange = true;
-    });
-  }
+  bool get _hasChanged =>
+      _initialText != bodyController!.text.trim() ||
+      titleController!.text.trim() != _initialTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +74,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
             text: bodyController!.text.trim(),
           );
 
-          // If we didn't edit anything, we return null; else we return our node
-          if (newNote.text.isEmpty && newNote.title.isEmpty || !_didChange) {
+          // If we didn't edit anything, we return null; else we return our note
+          if (newNote.text.isEmpty && newNote.title.isEmpty || !_hasChanged) {
             Navigator.pop(context, null);
           } else {
             Navigator.pop(
@@ -95,9 +103,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  // Show the current date while editing, else use the last edit date
+                  // Show the last edit date
                   formatDate(
-                      _didChange ? DateTime.now() : widget.note.lastEditDate),
+                      _hasChanged ? DateTime.now() : widget.note.lastEditDate),
                 ),
                 alignment: Alignment.centerRight,
               ),

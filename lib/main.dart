@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
+import 'package:notality/screens/note_edit.dart';
 import 'package:notality/screens/note_list.dart';
 import 'package:notality/services/notes_service.dart';
 
@@ -68,15 +69,11 @@ class _NotesPageState extends State<NotesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var note = Note(
-            type: "text",
-            title: "Newly added note",
-            text:
-                "Custom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\nCustom text\n",
-            lastEditDate: DateTime.now(),
-          );
+          var newNote = await Navigator.of(context).push(
+              MaterialPageRoute<Note>(
+                  builder: (context) => NoteEditPage(Note.empty())));
 
-          widget.notes!.add(note);
+          widget.notes!.add(newNote!);
 
           await NotesService.writeNotes(widget.notes!);
 

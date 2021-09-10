@@ -35,6 +35,12 @@ class Note {
     required this.text,
   });
 
+  Note.empty()
+      : type = "text",
+        text = "",
+        title = "",
+        lastEditDate = DateTime.now();
+
   String type;
   String title;
   DateTime lastEditDate;

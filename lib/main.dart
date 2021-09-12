@@ -11,6 +11,9 @@ void main() {
 class NotesApp extends StatelessWidget {
   const NotesApp({Key? key}) : super(key: key);
 
+  static const _themeColor = Color.fromRGBO(0x04, 0x9E, 0x42, 1.0);
+  static const _secondaryColor = Color.fromRGBO(0x05, 0xC6, 0x53, 1.0);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,16 +21,16 @@ class NotesApp extends StatelessWidget {
       theme: ThemeData.from(
         colorScheme: const ColorScheme.light().copyWith(
           brightness: Brightness.light,
-          primary: Colors.amber,
-          secondary: Colors.amberAccent,
+          primary: _themeColor,
+          secondary: _secondaryColor,
           surface: Colors.grey[200],
         ),
       ),
       darkTheme: ThemeData.from(
         colorScheme: const ColorScheme.dark().copyWith(
           brightness: Brightness.dark,
-          primary: Colors.amber,
-          secondary: Colors.amberAccent,
+          primary: _themeColor,
+          secondary: _secondaryColor,
           surface: Colors.grey[900],
         ),
       ),

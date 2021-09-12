@@ -4,6 +4,15 @@ import 'package:notality/models/text_note.dart';
 import 'package:mutex/mutex.dart';
 
 class NotesService {
+  // Singleton: the NotesService "constructor" always returns the same object
+  static final instance = NotesService._internal();
+  factory NotesService() {
+    return instance;
+  }
+
+  // Actual, private constructor
+  NotesService._internal();
+
   static final fileMutex = Mutex();
 
   List<Note>? _notes;

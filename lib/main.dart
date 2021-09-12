@@ -66,7 +66,7 @@ class _NotesPageState extends State<NotesPage> {
         future: widget.service.readNotes(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return NoteList(widget.service);
+            return NoteList();
           } else if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);
           } else {

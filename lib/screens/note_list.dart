@@ -5,9 +5,9 @@ import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/note_card.dart';
 
 class NoteList extends StatefulWidget {
-  NoteList(this.service);
+  NoteList({Key? key}) : super(key: key);
 
-  NotesService service;
+  final service = NotesService();
 
   @override
   _NoteListState createState() => _NoteListState();
@@ -54,6 +54,8 @@ class _NoteListState extends State<NoteList> {
                       ),
 
                       onDismissed: (direction) async {
+                        widget.service.deleteNote(index);
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: const Text('Deleted note'),
@@ -65,8 +67,6 @@ class _NoteListState extends State<NoteList> {
                             ),
                           ),
                         );
-
-                        widget.service.deleteNote(index);
                       },
                     ),
                   );

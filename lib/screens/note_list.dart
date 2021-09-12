@@ -21,11 +21,17 @@ class _NoteListState extends State<NoteList> {
     super.initState();
 
     // We want to notify the AnimatedList when an item was added or removed
-    widget.service.addInsertCallback(
-        (index) => widget._listKey.currentState!.insertItem(index));
+    widget.service.addInsertCallback((index) {
+      if (widget._listKey.currentState == null) {
+        // The list is not yet displayed, e.g. because there are 0 items
+        setState(() {});
+      } else {
+        widget._listKey.currentState!.insertItem(index);
+      }
+    });
 
     widget.service.addRemoveCallback(
-      (index) => widget._listKey.currentState!.removeItem(index,
+      (index) => widget._listKey.currentState?.removeItem(index,
           (BuildContext context, Animation<double> animation) {
         return Container();
       }),

@@ -64,11 +64,18 @@ class NotesService {
   /// Write the given notes to the notes file, overwriting any old changes
   Future<void> writeNotes(List<Note> notes, [bool lock = true]) async {
     await _protectIfNecessary(() async {
+      // Always sort notes by their edit date, the latest one first.
+      // This is necessary because when restoring multiple note in quick succession,
+      // the notes can be out of order
+      notes.sort((a, b) {
+        return b.lastEditDate.compareTo(a.lastEditDate);
+      });
+
       _notes = notes;
 
       var fp = await getNotesFilePath();
 
-      var json = notesFileContentToJson(NotesFileContent(notes: notes));
+      var json = notesFileContentToJson(NotesFileContent(notes: _notes!));
 
       // Write data to a temporary file and *only then* rename
       var tmpFile = File(fp + ".tmp");

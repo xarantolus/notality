@@ -5,7 +5,7 @@ import 'package:notality/models/text_note.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NoteCard extends StatefulWidget {
-  NoteCard({Key? key, required this.note}) : super(key: key);
+  const NoteCard({Key? key, required this.note}) : super(key: key);
 
   final Note note;
 
@@ -36,9 +36,14 @@ class _NoteCardState extends State<NoteCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(2),
+      padding: const EdgeInsets.only(left: 8, right: 8, top: 6),
       child: Container(
-        color: Theme.of(context).cardColor,
+        decoration: ShapeDecoration(
+          color: Theme.of(context).cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        ),
         child: Align(
           alignment: Alignment.topLeft,
           child: ListTile(

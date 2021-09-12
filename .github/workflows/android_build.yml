@@ -27,5 +27,24 @@ jobs:
       
       - run: flutter build apk
       
+      - name: Extract app version
+        run: |
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+            chmod +x /usr/bin/yq
 
-      # TODO: Release if tests were OK
+            echo "APP_VERSION=$(yq eval .version pubspec.yaml | cut -d+ -f1)" >> $GITHUB_ENV
+            echo "COMMIT_MESSAGE=$(git log -n 1 --oneline | cut -d' ' -f2- -)"  >> $GITHUB_ENV
+
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build\app\outputs\flutter-apk\*.apk
+          tag_name: ${{ 'v' + env.APP_VERSION }}
+          name: ${{ env.COMMIT_MESSAGE }}
+          fail_on_unmatched_files: true
+          draft: true 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ startsWith(env.COMMIT_MESSAGE, "[Release]") || startsWith(env.COMMIT_MESSAGE, "Release") }}
+    

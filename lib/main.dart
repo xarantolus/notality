@@ -52,6 +52,20 @@ class _NotesPageState extends State<NotesPage> {
   @override
   void initState() {
     super.initState();
+
+    widget.service.addInsertCallback((index) => setState(() {}));
+    widget.service.addRemoveCallback((index) => setState(() {}));
+  }
+
+  void _createNewNote() async {
+    var newNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
+        builder: (context) => NoteEditPage(Note.empty(), true)));
+
+    if (newNote == null) {
+      return;
+    }
+
+    widget.service.addNote(newNote);
   }
 
   @override
@@ -76,17 +90,7 @@ class _NotesPageState extends State<NotesPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var newNote = await Navigator.of(context).push(
-              MaterialPageRoute<Note>(
-                  builder: (context) => NoteEditPage(Note.empty(), true)));
-
-          if (newNote == null) {
-            return;
-          }
-
-          widget.service.addNote(newNote);
-        },
+        onPressed: _createNewNote,
         tooltip: 'Add Note',
         child: const Icon(Icons.add),
       ),

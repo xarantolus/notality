@@ -40,34 +40,54 @@ class _NoteListState extends State<NoteList> {
 
                       await widget.service.replaceNote(editedNote, index);
                     },
-                    child: Dismissible(
-                      key: UniqueKey(),
+                    child: Container(
+                      padding: const EdgeInsets.only(left: 8, right: 8, top: 6),
+                      child: Dismissible(
+                        key: UniqueKey(),
 
-                      child: NoteCard(note: item),
-
-                      // Allow swiping left or right
-                      direction: DismissDirection.horizontal,
-
-                      background: Container(
-                        color: Colors.red,
-                        child: const Icon(Icons.delete_forever),
-                      ),
-
-                      onDismissed: (direction) async {
-                        widget.service.deleteNote(index);
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Deleted note'),
-                            action: SnackBarAction(
-                              label: "Restore",
-                              onPressed: () {
-                                widget.service.addNote(item, index);
-                              },
+                        child: Container(
+                          child: NoteCard(note: item),
+                          decoration: ShapeDecoration(
+                            color: Theme.of(context).cardColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
-                        );
-                      },
+                        ),
+                        // Allow swiping left or right
+                        direction: DismissDirection.horizontal,
+
+                        background: Container(
+                          child: const Icon(Icons.delete_forever),
+                          padding: const EdgeInsets.only(
+                            left: 8,
+                            right: 8,
+                            top: 6,
+                          ),
+                          decoration: ShapeDecoration(
+                            color: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                          ),
+                        ),
+
+                        onDismissed: (direction) async {
+                          widget.service.deleteNote(index);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text('Deleted note'),
+                              action: SnackBarAction(
+                                label: "Restore",
+                                onPressed: () {
+                                  widget.service.addNote(item, index);
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   );
                 },

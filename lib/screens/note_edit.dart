@@ -5,10 +5,10 @@ import 'package:notality/models/text_note.dart';
 import 'package:intl/intl.dart';
 
 class NoteEditPage extends StatefulWidget {
-  NoteEditPage(this.note, this.autofocus, {Key? key}) : super(key: key);
+  const NoteEditPage(this.note, this.autofocus, {Key? key}) : super(key: key);
 
-  Note note;
-  bool autofocus;
+  final Note note;
+  final bool autofocus;
 
   @override
   _NoteEditPageState createState() => _NoteEditPageState();

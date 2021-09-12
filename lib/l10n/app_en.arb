@@ -1,3 +1,9 @@
 {
-    "dateTimeFormat": "MM/dd/yyyy hh:mm a"
+  "addNoteToolTip": "Add Note",
+  "dateTimeFormat": "MM/dd/yyyy hh:mm a",
+  "deletedNote": "Deleted note",
+  "deletedNoteRestore": "Restore",
+  "emptyListHint": "Nothing to see here...",
+  "noteHint": "Note",
+  "titleHint": "Title"
 }

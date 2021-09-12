@@ -3,6 +3,7 @@ import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/note_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NoteList extends StatefulWidget {
   NoteList({Key? key}) : super(key: key);
@@ -54,9 +55,9 @@ class _NoteListState extends State<NoteList> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Deleted note'),
+        content: Text(AppLocalizations.of(context)!.deletedNote),
         action: SnackBarAction(
-          label: "Restore",
+          label: AppLocalizations.of(context)!.deletedNoteRestore,
           onPressed: () {
             widget.service.addNote(item, index);
           },
@@ -143,7 +144,8 @@ class _NoteListState extends State<NoteList> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              return const Center(child: Text("Nothing to see here..."));
+              return Center(
+                  child: Text(AppLocalizations.of(context)!.emptyListHint));
             } else {
               return _animatedList(snapshot.data!);
             }

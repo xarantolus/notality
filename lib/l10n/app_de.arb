@@ -1,3 +1,9 @@
 {
-    "dateTimeFormat": "dd. MMMM yyyy, HH:mm 'Uhr'"
+  "addNoteToolTip": "Neue Notiz",
+  "dateTimeFormat": "dd. MMMM yyyy, HH:mm 'Uhr'",
+  "deletedNote": "Notiz gelöscht",
+  "deletedNoteRestore": "Rückgängig",
+  "emptyListHint": "Ganz schön leer hier...",
+  "noteHint": "Notiz",
+  "titleHint": "Titel"
 }

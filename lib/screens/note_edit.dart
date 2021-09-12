@@ -111,8 +111,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 style: const TextStyle(
                   fontSize: 24,
                 ),
-                decoration: const InputDecoration(
-                  hintText: "Title",
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.titleHint,
                 ),
                 onEditingComplete: () => FocusScope.of(context).nextFocus(),
               ),
@@ -133,8 +133,10 @@ class _NoteEditPageState extends State<NoteEditPage> {
                   style: const TextStyle(
                     fontSize: 16,
                   ),
-                  decoration: const InputDecoration(
-                      hintText: "Note", border: InputBorder.none),
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.noteHint,
+                    border: InputBorder.none,
+                  ),
                   keyboardType: TextInputType.multiline,
                 ),
               )

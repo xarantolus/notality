@@ -106,7 +106,7 @@ class _NotesPageState extends State<NotesPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _createNewNote,
-        tooltip: 'Add Note',
+        tooltip: AppLocalizations.of(context)!.addNoteToolTip,
         child: const Icon(Icons.add),
       ),
     );

@@ -16,11 +16,16 @@ class NotesService {
   static final fileMutex = Mutex();
 
   List<Note>? _notes;
-  Function? _callback;
 
-  // setCallback sets the callback that is called whenever the managed notes are updated
-  void setCallback(Function cb) {
-    _callback = cb;
+  final List<Function(int)> _insertCallbacks = [];
+  final List<Function(int)> _removeCallbacks = [];
+
+  void addInsertCallback(Function(int) cb) {
+    _insertCallbacks.add(cb);
+  }
+
+  void addRemoveCallback(Function(int) cb) {
+    _removeCallbacks.add(cb);
   }
 
   // protectIfNecessary runs criticalSection, locking with fileMutex if lock is true
@@ -71,8 +76,6 @@ class NotesService {
 
       await tmpFile.rename(fp);
     }, lock);
-
-    _callback?.call();
   }
 
   /// deleteNote deletes the note with the given index
@@ -84,6 +87,10 @@ class NotesService {
 
       await writeNotes(notes, false);
     }, true);
+
+    for (var f in _removeCallbacks) {
+      f.call(index);
+    }
   }
 
   /// addNote adds the given note at index
@@ -102,6 +109,9 @@ class NotesService {
 
       await writeNotes(notes, false);
     }, true);
+    for (var f in _insertCallbacks) {
+      f.call(index);
+    }
   }
 
   /// replaceNote deletes the note at index and replaces it with the given note n.

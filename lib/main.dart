@@ -49,11 +49,6 @@ class _NotesPageState extends State<NotesPage> {
   @override
   void initState() {
     super.initState();
-
-    // Let the notes service call setState whenever the notes are updated
-    widget.service.setCallback(() {
-      setState(() {});
-    });
   }
 
   @override

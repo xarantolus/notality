@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:intl/intl.dart';
@@ -62,7 +63,10 @@ class _NoteEditPageState extends State<NoteEditPage> {
   }
 
   String formatDate(DateTime d) {
-    final DateFormat formatter = DateFormat.Hm().add_yMMMMd();
+    final localization = AppLocalizations.of(context)!;
+
+    final DateFormat formatter =
+        DateFormat(localization.dateTimeFormat, localization.localeName);
 
     return formatter.format(d);
   }
@@ -71,30 +75,32 @@ class _NoteEditPageState extends State<NoteEditPage> {
       _initialText != bodyController!.text.trim() ||
       titleController!.text.trim() != _initialTitle;
 
+  Future<bool> _onLeave() async {
+    var newNote = Note(
+      type: "text",
+      lastEditDate: DateTime.now(),
+      title: titleController!.text.trim(),
+      text: bodyController!.text.trim(),
+    );
+
+    // If we didn't edit anything, we return null; else we return our note
+    if (newNote.text.isEmpty && newNote.title.isEmpty || !_hasChanged) {
+      Navigator.pop(context, null);
+    } else {
+      Navigator.pop(
+        context,
+        newNote,
+      );
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: WillPopScope(
-        onWillPop: () async {
-          var newNote = Note(
-            type: "text",
-            lastEditDate: DateTime.now(),
-            title: titleController!.text.trim(),
-            text: bodyController!.text.trim(),
-          );
-
-          // If we didn't edit anything, we return null; else we return our note
-          if (newNote.text.isEmpty && newNote.title.isEmpty || !_hasChanged) {
-            Navigator.pop(context, null);
-          } else {
-            Navigator.pop(
-              context,
-              newNote,
-            );
-          }
-          return false;
-        },
+        onWillPop: _onLeave,
         child: Container(
           padding: const EdgeInsets.all(8),
           child: Column(

@@ -3,13 +3,26 @@ import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/screens/note_list.dart';
 import 'package:notality/services/notes_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+// timeTranslations contains the mapping of locales to timeago translations
+final timeTranslations = <String, timeago.LookupMessages>{
+  'en': timeago.EnMessages(),
+  'de': timeago.DeMessages(),
+};
 
 void main() {
-  runApp(const NotesApp());
+  runApp(NotesApp());
 }
 
 class NotesApp extends StatelessWidget {
-  const NotesApp({Key? key}) : super(key: key);
+  NotesApp({Key? key}) : super(key: key) {
+    // Load all translation locales
+    timeTranslations.forEach((locale, messages) {
+      timeago.setLocaleMessages(locale, messages);
+    });
+  }
 
   static const _themeColor = Color.fromRGBO(0x04, 0x9E, 0x42, 1.0);
   static const _secondaryColor = Color.fromRGBO(0x05, 0xC6, 0x53, 1.0);
@@ -18,6 +31,8 @@ class NotesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Notality',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData.from(
         colorScheme: const ColorScheme.light().copyWith(
           brightness: Brightness.light,

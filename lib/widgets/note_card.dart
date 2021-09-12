@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -65,7 +66,10 @@ class _NoteCardState extends State<NoteCard> {
         title: widget.note.title.isEmpty ? null : titleContainer(context),
         subtitle: widget.note.text.isEmpty ? null : subtitleContainer(context),
         trailing: Text(
-          timeago.format(widget.note.lastEditDate),
+          timeago.format(
+            widget.note.lastEditDate,
+            locale: AppLocalizations.of(context)!.localeName,
+          ),
         ),
       ),
     );

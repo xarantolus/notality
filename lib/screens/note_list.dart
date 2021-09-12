@@ -105,7 +105,7 @@ class _NoteListState extends State<NoteList> {
       ),
 
       // Allow swiping left or right
-      direction: DismissDirection.endToStart,
+      direction: DismissDirection.horizontal,
 
       // The background behind the list item is a trash can
       background: Container(

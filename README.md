@@ -1,4 +1,4 @@
-# notality
+# Notality
 
 A new Flutter project.
 

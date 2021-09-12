@@ -46,4 +46,4 @@ jobs:
           draft: true 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: ${{ startsWith(env.COMMIT_MESSAGE, "[Release]") || startsWith(env.COMMIT_MESSAGE, "Release") }}
+        if: ${{ startsWith(env.COMMIT_MESSAGE, '[Release]') || startsWith(env.COMMIT_MESSAGE, 'Release') }}

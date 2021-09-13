@@ -1,5 +1,5 @@
 # Notality
-Notality is a very simple note taking app.
+Notality is a very simple note taking app. I mostly built it to learn how Flutter works, but it's functional and you can use it.
 
 ### Features
 * Create, edit and delete notes

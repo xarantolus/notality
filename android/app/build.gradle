@@ -65,8 +65,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-dev"
+            manifestPlaceholders = [ applicationLabel: "Notality (debug)" ]
+
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
         release {
+            manifestPlaceholders = [ applicationLabel: "Notality" ]
+
             signingConfig signingConfigs.release
+            shrinkResources true
+            minifyEnabled true
         }
     }
 }

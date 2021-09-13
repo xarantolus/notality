@@ -3,6 +3,7 @@
   "dateTimeFormat": "MM/dd/yyyy hh:mm a",
   "deletedNote": "Deleted note",
   "deletedNoteRestore": "Restore",
+  "editPageTitle": "Edit note",
   "emptyListHint": "Nothing to see here...",
   "noteHint": "Note",
   "titleHint": "Title"

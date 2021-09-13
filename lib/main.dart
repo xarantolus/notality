@@ -40,6 +40,12 @@ class NotesApp extends StatelessWidget {
           secondary: _secondaryColor,
           surface: Colors.grey[200],
         ),
+        textTheme: Typography.blackHelsinki.copyWith(
+          bodyText2: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+          ),
+        ),
       ),
       darkTheme: ThemeData.from(
         colorScheme: const ColorScheme.dark().copyWith(
@@ -47,6 +53,12 @@ class NotesApp extends StatelessWidget {
           primary: _themeColor,
           secondary: _secondaryColor,
           surface: Colors.grey[900],
+        ),
+        textTheme: Typography.whiteHelsinki.copyWith(
+          bodyText2: TextStyle(
+            color: Colors.grey[400],
+            fontSize: 14,
+          ),
         ),
       ),
       home: NotesPage(),
@@ -74,7 +86,8 @@ class _NotesPageState extends State<NotesPage> {
 
   void _createNewNote() async {
     var newNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
-        builder: (context) => NoteEditPage(Note.empty(), true)));
+      builder: (context) => NoteEditPage(Note.empty(), true),
+    ));
 
     if (newNote == null) {
       return;

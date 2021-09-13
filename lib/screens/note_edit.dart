@@ -98,11 +98,13 @@ class _NoteEditPageState extends State<NoteEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.editPageTitle),
+      ),
       body: WillPopScope(
         onWillPop: _onLeave,
         child: Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
           child: Column(
             children: [
               TextField(
@@ -113,6 +115,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 ),
                 decoration: InputDecoration(
                   hintText: AppLocalizations.of(context)!.titleHint,
+                  border: InputBorder.none,
                 ),
                 onEditingComplete: () => FocusScope.of(context).nextFocus(),
               ),
@@ -122,8 +125,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
                   // Show the last edit date
                   formatDate(
                       _hasChanged ? DateTime.now() : widget.note.lastEditDate),
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
                 alignment: Alignment.centerRight,
+              ),
+              Divider(
+                color: Theme.of(context).colorScheme.secondary,
               ),
               Expanded(
                 child: TextField(

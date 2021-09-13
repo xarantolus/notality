@@ -3,8 +3,6 @@ name: Build for Android
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -26,8 +24,6 @@ jobs:
         id: test
         continue-on-error: true
       
-      - run: flutter build apk --release
-      
       - name: Extract env variables
         run: |
             sudo wget -q "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64" -O "/usr/bin/yq"
@@ -37,6 +33,14 @@ jobs:
             echo "COMMIT_MESSAGE=$(git log -n 1 --oneline | cut -d' ' -f2- -)" >> $GITHUB_ENV
             echo "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
 
+      - name: Set up signing config
+        run: |
+          echo "${{ secrets.SIGNING_KEYSTORE_CONTENT }}" | base64 -d - > upload-keystore.jks
+          export X_KEYSTORE_PATH="$(pwd)/upload-keystore.jks"
+
+          echo "${{ secrets.SIGNING_PROPERTIES_CONTENT }}" > android/key.properties
+
+      - run: flutter build apk --release
 
       - name: Upload release
         uses: softprops/action-gh-release@v1

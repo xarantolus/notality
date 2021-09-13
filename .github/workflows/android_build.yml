@@ -21,9 +21,7 @@ jobs:
       - run: flutter pub get
       
       - run: flutter test
-        id: test
-        continue-on-error: true
-      
+
       - name: Extract env variables
         run: |
             sudo wget -q "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64" -O "/usr/bin/yq"
@@ -37,10 +35,13 @@ jobs:
         run: |
           echo "${{ secrets.SIGNING_KEYSTORE_CONTENT }}" | base64 -d - > upload-keystore.jks
           export X_KEYSTORE_PATH="$(pwd)/upload-keystore.jks"
+          echo "X_KEYSTORE_PATH=$X_KEYSTORE_PATH" >> $GITHUB_ENV
 
           echo "${{ secrets.SIGNING_PROPERTIES_CONTENT }}" > android/key.properties
 
       - run: flutter build apk --release
+        env:
+          X_KEYSTORE_PATH: ${{ env.X_KEYSTORE_PATH }}
 
       - name: Upload release
         uses: softprops/action-gh-release@v1

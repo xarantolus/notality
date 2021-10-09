@@ -69,17 +69,28 @@ class _NoteListState extends State<NoteList> {
 
   // _animatedList creates the animated list with its transitions
   Widget _itemList(List<Note> items) {
-    return ReorderableListView.builder(
-      key: widget._listKey,
-      itemCount: items.length,
-      onReorder: (int from, int to) async {
-        await widget.service.reorderNote(from, to);
-      },
-      itemBuilder: (context, index) {
-        final item = items[index];
+    return Theme(
+      // This theme data change makes sure that the edges around the cards
+      // are not dragged around with, else we also move the padded background,
+      // which is really ugly
+      data: Theme.of(context).copyWith(
+        canvasColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        dialogBackgroundColor: Colors.transparent,
+      ),
+      child: ReorderableListView.builder(
+        key: widget._listKey,
+        itemCount: items.length,
+        onReorder: (int from, int to) async {
+          await widget.service.reorderNote(from, to);
+        },
+        itemBuilder: (context, index) {
+          final item = items[index];
 
-        return _listCard(index, item, context);
-      },
+          return _listCard(index, item, context);
+        },
+      ),
     );
   }
 

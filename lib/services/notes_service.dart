@@ -64,13 +64,6 @@ class NotesService {
   /// Write the given notes to the notes file, overwriting any old changes
   Future<void> writeNotes(List<Note> notes, [bool lock = true]) async {
     await _protectIfNecessary(() async {
-      // Always sort notes by their edit date, the latest one first.
-      // This is necessary because when restoring multiple note in quick succession,
-      // the notes can be out of order
-      notes.sort((a, b) {
-        return b.lastEditDate.compareTo(a.lastEditDate);
-      });
-
       _notes = notes;
 
       var fp = await getNotesFilePath();
@@ -132,6 +125,27 @@ class NotesService {
       notes.insert(0, n);
 
       await writeNotes(notes, false);
+    }, true);
+  }
+
+  Future<List<Note>> reorderNote(int from, int to) async {
+    return await _protectIfNecessary(() async {
+      var notes = await readNotes(false);
+
+      // If we move an item lower than it was before, we need to subtract one;
+      // else we put it one position further than we want
+      if (to > from) {
+        to--;
+      }
+
+      var note = notes.removeAt(from);
+      notes.insert(to, note);
+
+      await writeNotes(notes, false);
+
+      _notes = notes;
+
+      return _notes!;
     }, true);
   }
 }

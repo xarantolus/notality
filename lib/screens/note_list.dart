@@ -68,9 +68,12 @@ class _NoteListState extends State<NoteList> {
 
   // _animatedList creates the animated list with its transitions
   Widget _itemList(List<Note> items) {
-    return ListView.builder(
+    return ReorderableListView.builder(
       key: widget._listKey,
       itemCount: items.length,
+      onReorder: (int from, int to) async {
+        await widget.service.reorderNote(from, to);
+      },
       itemBuilder: (context, index) {
         final item = items[index];
 
@@ -82,6 +85,7 @@ class _NoteListState extends State<NoteList> {
   // _listCard returns the list card with editing and swiping capability
   GestureDetector _listCard(int index, Note item, BuildContext context) {
     return GestureDetector(
+      key: ValueKey(index),
       onTap: () => _editNote(index, item),
       child: Container(
         padding: const EdgeInsets.only(left: 8, right: 8, top: 6),

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
@@ -108,6 +107,10 @@ class _NoteListState extends State<NoteList> {
 
   // _dismissibleListCard returns a list card that can be swiped away
   Dismissible _dismissibleListCard(Note item, BuildContext context, int index) {
+    var shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12.0),
+    );
+
     return Dismissible(
       key: ValueKey(index),
 
@@ -115,9 +118,7 @@ class _NoteListState extends State<NoteList> {
         child: NoteCard(note: item),
         decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
+          shape: shape,
         ),
       ),
 
@@ -134,9 +135,7 @@ class _NoteListState extends State<NoteList> {
         ),
         decoration: ShapeDecoration(
           color: Colors.red,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
+          shape: shape,
         ),
       ),
 

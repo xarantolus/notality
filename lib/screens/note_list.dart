@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
@@ -97,7 +98,7 @@ class _NoteListState extends State<NoteList> {
   // _dismissibleListCard returns a list card that can be swiped away
   Dismissible _dismissibleListCard(Note item, BuildContext context, int index) {
     return Dismissible(
-      key: UniqueKey(),
+      key: ValueKey(index),
 
       child: Container(
         child: NoteCard(note: item),

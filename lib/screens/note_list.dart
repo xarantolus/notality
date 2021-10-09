@@ -67,20 +67,14 @@ class _NoteListState extends State<NoteList> {
   }
 
   // _animatedList creates the animated list with its transitions
-  Widget _animatedList(List<Note> items) {
-    return AnimatedList(
+  Widget _itemList(List<Note> items) {
+    return ListView.builder(
       key: widget._listKey,
-      initialItemCount: items.length,
-      itemBuilder: (context, index, anim) {
+      itemCount: items.length,
+      itemBuilder: (context, index) {
         final item = items[index];
 
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(-1, 0),
-            end: const Offset(0, 0),
-          ).animate(anim),
-          child: _listCard(index, item, context),
-        );
+        return _listCard(index, item, context);
       },
     );
   }
@@ -147,7 +141,7 @@ class _NoteListState extends State<NoteList> {
               return Center(
                   child: Text(AppLocalizations.of(context)!.emptyListHint));
             } else {
-              return _animatedList(snapshot.data!);
+              return _itemList(snapshot.data!);
             }
           } else if (snapshot.hasError) {
             return ErrorWidget(snapshot.error!);

@@ -2,7 +2,7 @@
 Notality is a very simple note taking app. I mostly built it to learn how Flutter works, but it's functional and you can use it.
 
 ### Features
-* Create, edit and delete notes
+* Create, edit, delete and reorder notes
 * Automatic dark/light mode depending on the system-wide setting
 * Localization for English and German
 
@@ -11,7 +11,7 @@ Notality is a very simple note taking app. I mostly built it to learn how Flutte
 | :-------------------------------------------------------: | :--------------------------------------------------------: |
 | ![Note listing](.github/screenshots/listing.png?raw=true) | ![Mobile Menu](.github/screenshots/note-edit.png?raw=true) |
 
-Notes can be deleted by swiping them to the left or to the right.
+Notes can be deleted by swiping them to the left or to the right. A note can be relocated by holding and moving it to a new position in the list.
 
 ### Download
 You can [download the APK file from the releases section of this repository](https://github.com/xarantolus/notality/releases/latest). Then open it from the file manager to install it.

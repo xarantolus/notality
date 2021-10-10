@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:intl/intl.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/screens/note_list.dart';
@@ -108,6 +114,101 @@ class _NotesPageState extends State<NotesPage> {
     setState(() {});
   }
 
+  Future<void> _showErrorMessage(BuildContext context, dynamic e) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.errorTitle),
+          content: Text(e.toString()),
+        );
+      },
+    );
+  }
+
+  void _exportToFile() async {
+    try {
+      var _notes = await widget.service.readNotes();
+
+      var json = notesFileContentToJson(NotesFileContent(notes: _notes));
+
+      var now = DateTime.now();
+
+      await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(
+          fileName: "notality_${now.year}-${now.month}-${now.day}.json",
+          data: Uint8List.fromList(json.codeUnits),
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context)!.exportSuccessful),
+      ));
+    } catch (e) {
+      await _showErrorMessage(context, e);
+    }
+  }
+
+  void _importFromFile() async {
+    var fp = await FlutterFileDialog.pickFile(
+      params: const OpenFileDialogParams(
+        copyFileToCacheDir: true,
+      ),
+    );
+    if (fp == null) {
+      return;
+    }
+
+    try {
+      var content = await File(fp).readAsString();
+
+      var _notes = notesFileContentFromJson(content).notes;
+      if (_notes.isEmpty) {
+        throw Exception(AppLocalizations.of(context)!.emptyFileImport);
+      }
+
+      var ok = await showDialog<bool?>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(AppLocalizations.of(context)!.import),
+          content: Text(
+            _notes.length == 1
+                ? AppLocalizations.of(context)!.importSingle
+                : AppLocalizations.of(context)!.importMultiple(_notes.length),
+          ),
+          actions: [
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.cancelText),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.continueText),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        ),
+      );
+      if (ok != true) {
+        return;
+      }
+
+      await widget.service.writeNotes(_notes);
+
+      // let the UI reload the notes
+      setState(() {});
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppLocalizations.of(context)!.importSuccessful),
+      ));
+    } catch (e) {
+      await _showErrorMessage(context, e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +234,30 @@ class _NotesPageState extends State<NotesPage> {
                   ),
                   onTap: () {},
                 )
+              ];
+            },
+          ),
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.publish),
+                      Text(AppLocalizations.of(context)!.exportToFile),
+                    ],
+                  ),
+                  onTap: _exportToFile,
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      const Icon(Icons.download),
+                      Text(AppLocalizations.of(context)!.importFromFile),
+                    ],
+                  ),
+                  onTap: _importFromFile,
+                ),
               ];
             },
           ),

@@ -1,10 +1,29 @@
 {
   "addNoteToolTip": "Add Note",
+  "cancelText": "Cancel",
+  "continueText": "Continue",
   "dateTimeFormat": "MM/dd/yyyy hh:mm a",
   "deletedNote": "Deleted note",
   "deletedNoteRestore": "Restore",
   "editPageTitle": "Edit note",
+  "emptyFileImport": "The selected file doesn't contain any notes.",
   "emptyListHint": "Nothing to see here...",
+  "errorTitle": "Error",
+  "exportSuccessful": "Successfully exported notes",
+  "exportToFile": "Export to file",
+  "import": "Import",
+  "importFromFile": "Import from file",
+  "importMultiple": "{count} notes will be imported. All other notes will be overwritten.",
+  "@importMultiple": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "0"
+      }
+    }
+  },
+  "importSingle": "One note will be imported. All other notes will be overwritten.",
+  "importSuccessful": "Successfully imported new notes",
   "noteHint": "Note",
   "sortByDate": "Sort by date",
   "sortNotesToolTip": "Sort notes",

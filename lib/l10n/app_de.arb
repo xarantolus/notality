@@ -6,5 +6,7 @@
   "editPageTitle": "Notiz bearbeiten",
   "emptyListHint": "Ganz schön leer hier...",
   "noteHint": "Notiz",
+  "sortByDate": "Nach Datum sortieren",
+  "sortNotesToolTip": "Notizen sortieren",
   "titleHint": "Titel"
 }

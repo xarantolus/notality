@@ -96,11 +96,47 @@ class _NotesPageState extends State<NotesPage> {
     widget.service.addNote(newNote);
   }
 
+  void _sortNotesByDate() async {
+    var _notes = await widget.service.readNotes();
+
+    _notes.sort((a, b) {
+      return b.lastEditDate.compareTo(a.lastEditDate);
+    });
+
+    await widget.service.writeNotes(_notes);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notality"),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.sort),
+            tooltip: AppLocalizations.of(context)!.sortNotesToolTip,
+            padding: EdgeInsets.zero,
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  padding: EdgeInsets.zero,
+                  child: SizedBox(
+                    // This button must be full width of the popupmenuitem, else it looks weird when pressing long
+                    width: double.infinity,
+                    child: TextButton.icon(
+                      onPressed: _sortNotesByDate,
+                      icon: const Icon(Icons.schedule),
+                      label: Text(AppLocalizations.of(context)!.sortByDate),
+                    ),
+                  ),
+                  onTap: () {},
+                )
+              ];
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Note>>(
         future: widget.service.readNotes(),

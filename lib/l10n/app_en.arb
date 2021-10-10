@@ -6,5 +6,7 @@
   "editPageTitle": "Edit note",
   "emptyListHint": "Nothing to see here...",
   "noteHint": "Note",
+  "sortByDate": "Sort by date",
+  "sortNotesToolTip": "Sort notes",
   "titleHint": "Title"
 }

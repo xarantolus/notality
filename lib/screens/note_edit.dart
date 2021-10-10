@@ -23,6 +23,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
   String? _initialText;
   Timer? _timer;
 
+  DateTime? editedDate;
+
   @override
   void initState() {
     super.initState();
@@ -72,13 +74,14 @@ class _NoteEditPageState extends State<NoteEditPage> {
   }
 
   bool get _hasChanged =>
+      editedDate != null ||
       _initialText != bodyController!.text.trim() ||
       titleController!.text.trim() != _initialTitle;
 
   Future<bool> _onLeave() async {
     var newNote = Note(
       type: "text",
-      lastEditDate: DateTime.now(),
+      lastEditDate: _noteDate,
       title: titleController!.text.trim(),
       text: bodyController!.text.trim(),
     );
@@ -94,6 +97,42 @@ class _NoteEditPageState extends State<NoteEditPage> {
     }
     return false;
   }
+
+  Future<void> _pickDateAndTime(BuildContext context) async {
+    var now = _noteDate;
+
+    var date = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime.fromMicrosecondsSinceEpoch(0),
+      lastDate: DateTime(now.year + 1, now.month, now.day),
+    );
+
+    var tod = TimeOfDay(hour: now.hour, minute: now.minute);
+    var time = await showTimePicker(
+      context: context,
+      initialTime: tod,
+    );
+
+    // If we clicked behind/cancelled all dialogs
+    if (date == null && time == null) {
+      return;
+    }
+
+    // Construct the date + time from both selected values
+    var resultDayAndTime = date ?? DateTime(now.year, now.month, now.day);
+    if (time != null) {
+      resultDayAndTime = resultDayAndTime
+          .add(Duration(hours: time.hour, minutes: time.minute));
+    }
+
+    setState(() {
+      editedDate = resultDayAndTime;
+    });
+  }
+
+  DateTime get _noteDate =>
+      _hasChanged ? (editedDate ?? DateTime.now()) : widget.note.lastEditDate;
 
   @override
   Widget build(BuildContext context) {
@@ -119,15 +158,17 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 ),
                 onEditingComplete: () => FocusScope.of(context).nextFocus(),
               ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  // Show the last edit date
-                  formatDate(
-                      _hasChanged ? DateTime.now() : widget.note.lastEditDate),
-                  style: Theme.of(context).textTheme.bodyText2,
+              GestureDetector(
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Text(
+                    // Show the last edit date
+                    formatDate(_noteDate),
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  alignment: Alignment.centerRight,
                 ),
-                alignment: Alignment.centerRight,
+                onTap: () => _pickDateAndTime(context),
               ),
               Divider(
                 color: Theme.of(context).colorScheme.secondary,

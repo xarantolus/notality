@@ -69,6 +69,7 @@ class _NoteCardState extends State<NoteCard> {
           timeago.format(
             widget.note.lastEditDate,
             locale: AppLocalizations.of(context)!.localeName,
+            allowFromNow: true,
           ),
         ),
       ),

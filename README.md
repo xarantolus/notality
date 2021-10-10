@@ -12,6 +12,7 @@ Notality is a very simple note taking app. I mostly built it to learn how Flutte
 | ![Note listing](.github/screenshots/listing.png?raw=true) | ![Mobile Menu](.github/screenshots/note-edit.png?raw=true) |
 
 Notes can be deleted by swiping them to the left or to the right. A note can be relocated by holding and moving it to a new position in the list.
+If you want to change the date/time of a note, just open it and tap the date shown under the title.
 
 ### Download
 You can [download the APK file from the releases section of this repository](https://github.com/xarantolus/notality/releases/latest). Then open it from the file manager to install it.

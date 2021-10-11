@@ -7,9 +7,13 @@ Notality is a very simple note taking app. I mostly built it to learn how Flutte
 * Localization for English and German
 
 ### Screenshots
-|                       Note listing                        |                      Note edit screen                      |
+|                 Note listing (dark mode)                  |               Note edit screen  (dark mode)                |
 | :-------------------------------------------------------: | :--------------------------------------------------------: |
-| ![Note listing](.github/screenshots/listing.png?raw=true) | ![Mobile Menu](.github/screenshots/note-edit.png?raw=true) |
+| ![Note listing](.github/screenshots/d-listing.png?raw=true) | ![Mobile Menu](.github/screenshots/d-edit.png?raw=true) |
+
+|                 Note listing (light mode)                  |               Note edit screen  (light mode)                |
+| :-------------------------------------------------------: | :--------------------------------------------------------: |
+| ![Note listing](.github/screenshots/l-listing.png?raw=true) | ![Mobile Menu](.github/screenshots/l-edit.png?raw=true) |
 
 Notes can be deleted by swiping them to the left or to the right. A note can be relocated by holding and moving it to a new position in the list.
 If you want to change the date/time of a note, just open it and tap the date shown under the title.

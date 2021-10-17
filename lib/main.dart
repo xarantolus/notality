@@ -263,21 +263,7 @@ class _NotesPageState extends State<NotesPage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Note>>(
-        future: widget.service.readNotes(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return NoteList();
-          } else if (snapshot.hasError) {
-            return ErrorWidget(snapshot.error!);
-          } else {
-            // Just a loading scren
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+      body: NoteList(),
       floatingActionButton: FloatingActionButton(
         onPressed: _createNewNote,
         tooltip: AppLocalizations.of(context)!.addNoteToolTip,

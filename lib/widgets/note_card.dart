@@ -63,6 +63,7 @@ class _NoteCardState extends State<NoteCard> {
     return Align(
       alignment: Alignment.topLeft,
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         title: widget.note.title.isEmpty ? null : titleContainer(context),
         subtitle: widget.note.text.isEmpty ? null : subtitleContainer(context),
         trailing: Text(

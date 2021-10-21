@@ -137,7 +137,7 @@ class _NotesPageState extends State<NotesPage> {
       await FlutterFileDialog.saveFile(
         params: SaveFileDialogParams(
           fileName: "notality_${now.year}-${now.month}-${now.day}.json",
-          data: Uint8List.fromList(json.codeUnits),
+          data: Uint8List.fromList(utf8.encode(json)),
         ),
       );
 

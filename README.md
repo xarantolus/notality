@@ -4,6 +4,7 @@ Notality is a very simple note taking app. I mostly built it to learn how Flutte
 ### Features
 * Create, edit, delete and reorder notes
 * Automatic dark/light mode depending on the system-wide setting
+* Import/Export your notes to save them externally
 * Localization for English and German
 
 ### Screenshots

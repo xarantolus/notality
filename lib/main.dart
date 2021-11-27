@@ -4,12 +4,12 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/screens/note_list.dart';
 import 'package:notality/services/notes_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notality/widgets/app_bar.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 // timeTranslations contains the mapping of locales to timeago translations
@@ -211,9 +211,19 @@ class _NotesPageState extends State<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final lightTheme = Theme.of(context).brightness == Brightness.light;
+    final appIcon = ImageIcon(
+      lightTheme
+          ? const AssetImage("assets/icon/Icon-Outline-Dark.png")
+          : const AssetImage("assets/icon/Icon-Outline-Light.png"),
+    );
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Notality"),
+      appBar: CustomAppBar.create(
+        context,
+        title: "Notality",
+        titleStyle: const TextStyle(fontWeight: FontWeight.w900),
+        icon: appIcon,
         actions: [
           PopupMenuButton(
             icon: const Icon(Icons.sort),

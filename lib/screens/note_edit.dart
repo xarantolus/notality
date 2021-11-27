@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:notality/models/text_note.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:notality/models/text_note.dart';
+import 'package:notality/widgets/app_bar.dart';
 
 class NoteEditPage extends StatefulWidget {
   const NoteEditPage(this.note, this.autofocus, {Key? key}) : super(key: key);
@@ -137,8 +138,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.editPageTitle),
+      appBar: CustomAppBar.create(
+        context,
+        title: AppLocalizations.of(context)!.editPageTitle,
       ),
       body: WillPopScope(
         onWillPop: _onLeave,

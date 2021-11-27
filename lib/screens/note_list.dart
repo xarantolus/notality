@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/note_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NoteList extends StatefulWidget {
   NoteList({Key? key}) : super(key: key);
@@ -50,8 +50,8 @@ class _NoteListState extends State<NoteList> {
     await widget.service.replaceNote(editedNote, index);
   }
 
-  void _deleteNote(int index, BuildContext context, Note item) {
-    widget.service.deleteNote(index);
+  Future<void> _deleteNote(int index, BuildContext context, Note item) async {
+    await widget.service.deleteNote(index);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -140,7 +140,7 @@ class _NoteListState extends State<NoteList> {
       ),
 
       onDismissed: (direction) async {
-        _deleteNote(index, context, item);
+        await _deleteNote(index, context, item);
       },
     );
   }

@@ -99,7 +99,7 @@ class _NoteListState extends State<NoteList> {
       key: ValueKey(index),
       onTap: () => _editNote(index, item),
       child: Container(
-        padding: const EdgeInsets.only(left: 8, right: 8, top: 6),
+        padding: const EdgeInsets.only(left: 8, right: 8, top: 3, bottom: 3),
         child: _dismissibleListCard(item, context, index),
       ),
     );

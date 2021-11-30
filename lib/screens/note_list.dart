@@ -79,6 +79,7 @@ class _NoteListState extends State<NoteList> {
         dialogBackgroundColor: Colors.transparent,
       ),
       child: ReorderableListView.builder(
+        physics: const BouncingScrollPhysics(),
         key: widget._listKey,
         itemCount: items.length,
         onReorder: (int from, int to) async {

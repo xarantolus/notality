@@ -68,8 +68,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
   String formatDate(DateTime d) {
     final localization = AppLocalizations.of(context)!;
 
-    final DateFormat formatter =
-        DateFormat(localization.dateTimeFormat, localization.localeName);
+    final DateFormat formatter = DateFormat(
+      MediaQuery.of(context).alwaysUse24HourFormat
+          ? localization.dateTimeFormat24h
+          : localization.dateTimeFormat,
+      localization.localeName,
+    );
 
     return formatter.format(d);
   }

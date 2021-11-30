@@ -3,6 +3,7 @@
   "cancelText": "Abbrechen",
   "continueText": "Weiter",
   "dateTimeFormat": "dd. MMMM yyyy, HH:mm 'Uhr'",
+  "dateTimeFormat24h": "dd. MMMM yyyy, HH:mm 'Uhr'",
   "deletedNote": "Notiz gelöscht",
   "deletedNoteRestore": "Wiederherstellen",
   "editPageTitle": "Notiz bearbeiten",

@@ -3,6 +3,7 @@
   "cancelText": "Cancel",
   "continueText": "Continue",
   "dateTimeFormat": "MM/dd/yyyy hh:mm a",
+  "dateTimeFormat24h": "MM/dd/yyyy HH:mm",
   "deletedNote": "Deleted note",
   "deletedNoteRestore": "Restore",
   "editPageTitle": "Edit note",

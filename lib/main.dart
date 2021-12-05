@@ -94,25 +94,33 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _createNewNote() async {
-    var newNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
-      builder: (context) => NoteEditPage(Note.empty(), true),
-    ));
+    try {
+      var newNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
+        builder: (context) => NoteEditPage(Note.empty(), true),
+      ));
 
-    if (newNote == null) {
-      return;
+      if (newNote == null) {
+        return;
+      }
+
+      await widget.service.addNote(newNote);
+    } catch (e) {
+      await _showErrorMessage(context, e);
     }
-
-    widget.service.addNote(newNote);
   }
 
   void _sortNotesByDate() async {
-    var _notes = await widget.service.readNotes();
+    try {
+      var _notes = await widget.service.readNotes();
 
-    _notes.sort((a, b) {
-      return b.lastEditDate.compareTo(a.lastEditDate);
-    });
+      _notes.sort((a, b) {
+        return b.lastEditDate.compareTo(a.lastEditDate);
+      });
 
-    await widget.service.writeNotes(_notes);
+      await widget.service.writeNotes(_notes);
+    } catch (e) {
+      await _showErrorMessage(context, e);
+    }
 
     setState(() {});
   }

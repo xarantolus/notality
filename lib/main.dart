@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +12,7 @@ import 'package:notality/screens/note_list.dart';
 import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/app_bar.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:universal_html/html.dart' as web;
 
 // timeTranslations contains the mapping of locales to timeago translations
 final timeTranslations = <String, timeago.LookupMessages>{
@@ -145,12 +147,22 @@ class _NotesPageState extends State<NotesPage> {
 
       var now = DateTime.now();
 
-      await FlutterFileDialog.saveFile(
-        params: SaveFileDialogParams(
-          fileName: "notality_${now.year}-${now.month}-${now.day}.json",
-          data: Uint8List.fromList(utf8.encode(json)),
-        ),
-      );
+      final exportFn = "notality_${now.year}-${now.month}-${now.day}.json";
+      if (kIsWeb) {
+        web.AnchorElement()
+          ..href =
+              '${Uri.dataFromString(json, mimeType: 'application/json', encoding: utf8)}'
+          ..download = exportFn
+          ..style.display = 'none'
+          ..click();
+      } else {
+        await FlutterFileDialog.saveFile(
+          params: SaveFileDialogParams(
+            fileName: exportFn,
+            data: Uint8List.fromList(utf8.encode(json)),
+          ),
+        );
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(AppLocalizations.of(context)!.exportSuccessful),

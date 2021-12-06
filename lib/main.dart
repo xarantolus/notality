@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
@@ -173,17 +174,26 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   void _importFromFile() async {
-    var fp = await FlutterFileDialog.pickFile(
-      params: const OpenFileDialogParams(
-        copyFileToCacheDir: true,
-      ),
-    );
-    if (fp == null) {
-      return;
-    }
-
     try {
-      var content = await File(fp).readAsString();
+      String content;
+      if (kIsWeb) {
+        FilePickerResult? result = await FilePicker.platform.pickFiles();
+        if (result == null) {
+          return;
+        }
+        content = utf8.decode(result.files.first.bytes ?? []);
+      } else {
+        var fp = await FlutterFileDialog.pickFile(
+          params: const OpenFileDialogParams(
+            copyFileToCacheDir: true,
+          ),
+        );
+        if (fp == null) {
+          return;
+        }
+
+        content = await File(fp).readAsString();
+      }
 
       var _notes = notesFileContentFromJson(content).notes;
       if (_notes.isEmpty) {

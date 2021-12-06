@@ -4,6 +4,7 @@ import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/note_card.dart';
+import 'package:swipeable_tile/swipeable_tile.dart';
 
 class NoteList extends StatefulWidget {
   NoteList({Key? key}) : super(key: key);
@@ -107,13 +108,15 @@ class _NoteListState extends State<NoteList> {
   }
 
   // _dismissibleListCard returns a list card that can be swiped away
-  Dismissible _dismissibleListCard(Note item, BuildContext context, int index) {
+  Widget _dismissibleListCard(Note item, BuildContext context, int index) {
     var shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12.0),
     );
 
-    return Dismissible(
+    return SwipeableTile(
       key: ValueKey(index),
+      color: Colors.transparent,
+      direction: SwipeDirection.horizontal,
 
       child: Container(
         child: NoteCard(note: item),
@@ -123,24 +126,26 @@ class _NoteListState extends State<NoteList> {
         ),
       ),
 
-      // Allow swiping left or right
-      direction: DismissDirection.horizontal,
-
       // The background behind the list item is a trash can
-      background: Container(
-        child: const Icon(Icons.delete_forever),
-        padding: const EdgeInsets.only(
-          left: 8,
-          right: 8,
-          top: 6,
-        ),
-        decoration: ShapeDecoration(
-          color: Colors.red,
-          shape: shape,
-        ),
-      ),
+      backgroundBuilder: (context, direction, progress) {
+        return Container(
+          child: const Icon(
+            Icons.delete_forever,
+            size: 36,
+          ),
+          padding: const EdgeInsets.only(
+            left: 8,
+            right: 8,
+            top: 6,
+          ),
+          decoration: ShapeDecoration(
+            color: Colors.red,
+            shape: shape,
+          ),
+        );
+      },
 
-      onDismissed: (direction) async {
+      onSwiped: (direction) async {
         await _deleteNote(index, context, item);
       },
     );

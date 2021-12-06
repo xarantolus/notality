@@ -41,6 +41,7 @@ dependencies:
   intl: ^0.17.0
   flutter_file_dialog: ^2.1.1
   swipeable_tile: ^0.0.2
+  universal_html: ^2.0.8
 
 dev_dependencies:
   flutter_test:

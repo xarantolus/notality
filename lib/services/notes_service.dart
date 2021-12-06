@@ -1,7 +1,10 @@
 import "dart:io";
-import 'package:path_provider/path_provider.dart';
-import 'package:notality/models/text_note.dart';
+
+import 'package:flutter/foundation.dart';
 import 'package:mutex/mutex.dart';
+import 'package:notality/models/text_note.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:universal_html/html.dart' as web;
 
 class NotesService {
   // Singleton: the NotesService "constructor" always returns the same object
@@ -44,14 +47,22 @@ class NotesService {
     return "${dir.path}/notes.json";
   }
 
+  Future<String> _readNotesImplAndroid() async {
+    var fp = await getNotesFilePath();
+    return await File(fp).readAsString();
+  }
+
+  String _readNotesImplWeb() {
+    return web.window.localStorage["notes"] ?? "[]";
+  }
+
   /// Read all saved notes from the notes file.
   Future<List<Note>> readNotes([bool lock = true]) async {
     return _protectIfNecessary(() async {
       if (_notes == null) {
         try {
-          var fp = await getNotesFilePath();
-          var content = await File(fp).readAsString();
-
+          var content =
+              kIsWeb ? _readNotesImplWeb() : await _readNotesImplAndroid();
           _notes = notesFileContentFromJson(content).notes;
         } catch (e) {
           _notes = [];
@@ -61,20 +72,32 @@ class NotesService {
     }, lock);
   }
 
+  Future<void> _writeNotesImplAndroid(String json) async {
+    var fp = await getNotesFilePath();
+    var tmpFile = File(fp + ".tmp");
+    await tmpFile.writeAsString(json, flush: true);
+
+    await tmpFile.rename(fp);
+  }
+
+  void _writeNotesImplWeb(String json) {
+    web.window.localStorage["notes"] = json;
+  }
+
   /// Write the given notes to the notes file, overwriting any old changes
   Future<void> writeNotes(List<Note> notes, [bool lock = true]) async {
     await _protectIfNecessary(() async {
       _notes = notes;
 
-      var fp = await getNotesFilePath();
-
       var json = notesFileContentToJson(NotesFileContent(notes: _notes!));
 
-      // Write data to a temporary file and *only then* rename
-      var tmpFile = File(fp + ".tmp");
-      await tmpFile.writeAsString(json, flush: true);
+      if (kIsWeb) {
+        _writeNotesImplWeb(json);
+      } else {
+        await _writeNotesImplAndroid(json);
+      }
 
-      await tmpFile.rename(fp);
+      // Write data to a temporary file and *only then* rename
     }, lock);
   }
 

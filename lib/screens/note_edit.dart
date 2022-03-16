@@ -69,9 +69,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
     final localization = AppLocalizations.of(context)!;
 
     final DateFormat formatter = DateFormat(
-      MediaQuery.of(context).alwaysUse24HourFormat
-          ? localization.dateTimeFormat24h
-          : localization.dateTimeFormat,
+      MediaQuery.of(context).alwaysUse24HourFormat ? localization.dateTimeFormat24h : localization.dateTimeFormat,
       localization.localeName,
     );
 
@@ -127,8 +125,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
     // Construct the date + time from both selected values
     var resultDayAndTime = date ?? DateTime(now.year, now.month, now.day);
     if (time != null) {
-      resultDayAndTime = resultDayAndTime
-          .add(Duration(hours: time.hour, minutes: time.minute));
+      resultDayAndTime = resultDayAndTime.add(Duration(hours: time.hour, minutes: time.minute));
     }
 
     setState(() {
@@ -136,8 +133,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
     });
   }
 
-  DateTime get _noteDate =>
-      _hasChanged ? (editedDate ?? DateTime.now()) : widget.note.lastEditDate;
+  DateTime get _noteDate => _hasChanged ? (editedDate ?? DateTime.now()) : widget.note.lastEditDate;
 
   @override
   Widget build(BuildContext context) {

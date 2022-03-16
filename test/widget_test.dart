@@ -12,8 +12,7 @@ import 'package:notality/main.dart';
 import 'package:notality/screens/note_edit.dart';
 
 void main() {
-  testWidgets('Floating action button brings up the edit screen',
-      (WidgetTester tester) async {
+  testWidgets('Floating action button brings up the edit screen', (WidgetTester tester) async {
     await tester.pumpWidget(NotesApp());
 
     await tester.tap(find.byType(FloatingActionButton));
@@ -24,8 +23,7 @@ void main() {
     expect(find.byType(NoteEditPage), findsOneWidget);
   });
 
-  testWidgets("Time messages are available for all translated languages",
-      (WidgetTester tester) async {
+  testWidgets("Time messages are available for all translated languages", (WidgetTester tester) async {
     var app = NotesApp();
 
     await tester.pumpWidget(app);

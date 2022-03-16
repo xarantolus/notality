@@ -33,8 +33,7 @@ class _NoteListState extends State<NoteList> {
     });
 
     widget.service.addRemoveCallback(
-      (index) => widget._listKey.currentState?.removeItem(index,
-          (BuildContext context, Animation<double> animation) {
+      (index) => widget._listKey.currentState?.removeItem(index, (BuildContext context, Animation<double> animation) {
         return Container();
       }),
     );
@@ -42,8 +41,8 @@ class _NoteListState extends State<NoteList> {
 
   // _editNote pops up the node editing screen and saves/replaces the note
   void _editNote(int index, Note item) async {
-    var editedNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
-        builder: (context) => NoteEditPage(item, false)));
+    var editedNote =
+        await Navigator.of(context).push(MaterialPageRoute<Note>(builder: (context) => NoteEditPage(item, false)));
     if (editedNote == null) {
       return;
     }
@@ -159,8 +158,7 @@ class _NoteListState extends State<NoteList> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              return Center(
-                  child: Text(AppLocalizations.of(context)!.emptyListHint));
+              return Center(child: Text(AppLocalizations.of(context)!.emptyListHint));
             } else {
               return _itemList(snapshot.data!);
             }

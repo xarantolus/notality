@@ -29,8 +29,7 @@ class NotesService {
   }
 
   // protectIfNecessary runs criticalSection, locking with fileMutex if lock is true
-  Future<T> _protectIfNecessary<T>(
-      Future<T> Function() criticalSection, bool lock) async {
+  Future<T> _protectIfNecessary<T>(Future<T> Function() criticalSection, bool lock) async {
     if (lock) {
       return fileMutex.protect(() => criticalSection());
     } else {

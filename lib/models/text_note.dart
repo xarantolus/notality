@@ -4,11 +4,9 @@
 
 import 'dart:convert';
 
-NotesFileContent notesFileContentFromJson(String str) =>
-    NotesFileContent.fromJson(json.decode(str));
+NotesFileContent notesFileContentFromJson(String str) => NotesFileContent.fromJson(json.decode(str));
 
-String notesFileContentToJson(NotesFileContent data) =>
-    json.encode(data.toJson());
+String notesFileContentToJson(NotesFileContent data) => json.encode(data.toJson());
 
 class NotesFileContent {
   NotesFileContent({
@@ -17,8 +15,7 @@ class NotesFileContent {
 
   List<Note> notes;
 
-  factory NotesFileContent.fromJson(Map<String, dynamic> json) =>
-      NotesFileContent(
+  factory NotesFileContent.fromJson(Map<String, dynamic> json) => NotesFileContent(
         notes: List<Note>.from(json["notes"].map((x) => Note.fromJson(x))),
       );
 

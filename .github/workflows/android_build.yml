@@ -1,8 +1,10 @@
 name: Build for Android
 
 on:
+  # Every branch, so a build is proven before it reaches main. Push only: a
+  # pull request from a branch in this repo fires both events, which would
+  # build every commit twice.
   push:
-    branches: [ main ]
   workflow_dispatch:
 
 # The release step pushes a tag and a draft release, which the default
@@ -42,18 +44,39 @@ jobs:
             echo "APP_VERSION=$(yq eval .version pubspec.yaml | cut -d+ -f1)" >> $GITHUB_ENV
             echo "COMMIT_MESSAGE=$(git log -n 1 --oneline | cut -d' ' -f2- -)" >> $GITHUB_ENV
             echo "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_ENV
+            # Artifact names cannot contain a slash, branch names can.
+            echo "SAFE_REF=${GITHUB_REF_NAME//\//-}" >> $GITHUB_ENV
 
       - name: Set up signing config
+        env:
+          SIGNING_KEYSTORE_CONTENT: ${{ secrets.SIGNING_KEYSTORE_CONTENT }}
+          SIGNING_PROPERTIES_CONTENT: ${{ secrets.SIGNING_PROPERTIES_CONTENT }}
         run: |
-          echo "${{ secrets.SIGNING_KEYSTORE_CONTENT }}" | base64 -d - > upload-keystore.jks
-          export X_KEYSTORE_PATH="$(pwd)/upload-keystore.jks"
-          echo "X_KEYSTORE_PATH=$X_KEYSTORE_PATH" >> $GITHUB_ENV
+          # Fail loudly rather than decoding an empty string into a keystore,
+          # which surfaces much later as an opaque Gradle signing error.
+          if [ -z "$SIGNING_KEYSTORE_CONTENT" ] || [ -z "$SIGNING_PROPERTIES_CONTENT" ]; then
+            echo "::error::Signing secrets are missing; a release build cannot be signed."
+            exit 1
+          fi
+          echo "$SIGNING_KEYSTORE_CONTENT" | base64 -d - > upload-keystore.jks
+          echo "X_KEYSTORE_PATH=$(pwd)/upload-keystore.jks" >> $GITHUB_ENV
+          echo "$SIGNING_PROPERTIES_CONTENT" > android/key.properties
 
-          echo "${{ secrets.SIGNING_PROPERTIES_CONTENT }}" > android/key.properties
-
-      - run: flutter build apk --release
+      - name: Build signed APK
+        run: flutter build apk --release
         env:
           X_KEYSTORE_PATH: ${{ env.X_KEYSTORE_PATH }}
+
+      - name: Show APK hashes
+        run: find build/app/outputs -type f -name "*.apk" | xargs -L1 sha256sum
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: notality-apk-${{ env.APP_VERSION }}-${{ env.SAFE_REF }}-${{ github.sha }}
+          path: build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Upload release
         uses: softprops/action-gh-release@v3

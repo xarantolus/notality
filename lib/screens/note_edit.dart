@@ -149,7 +149,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
           _onLeave();
         },
         child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            12,
+            16,
+            4 + MediaQuery.viewPaddingOf(context).bottom,
+          ),
           child: Column(
             children: [
               TextField(

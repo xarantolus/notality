@@ -1,14 +1,11 @@
 name: Build for Android
 
 on:
-  # Every branch, so a build is proven before it reaches main. Push only: a
-  # pull request from a branch in this repo fires both events, which would
-  # build every commit twice.
+  # Push only: a pull request from a branch in this repo fires both events.
   push:
   workflow_dispatch:
 
-# The release step pushes a tag and a draft release, which the default
-# read-only GITHUB_TOKEN can no longer do.
+# The release step creates a tag and a draft release.
 permissions:
   contents: write
 
@@ -52,8 +49,8 @@ jobs:
           SIGNING_KEYSTORE_CONTENT: ${{ secrets.SIGNING_KEYSTORE_CONTENT }}
           SIGNING_PROPERTIES_CONTENT: ${{ secrets.SIGNING_PROPERTIES_CONTENT }}
         run: |
-          # Fail loudly rather than decoding an empty string into a keystore,
-          # which surfaces much later as an opaque Gradle signing error.
+          # An empty secret would decode into a keystore and fail much later,
+          # as an opaque Gradle signing error.
           if [ -z "$SIGNING_KEYSTORE_CONTENT" ] || [ -z "$SIGNING_PROPERTIES_CONTENT" ]; then
             echo "::error::Signing secrets are missing; a release build cannot be signed."
             exit 1

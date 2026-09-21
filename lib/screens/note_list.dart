@@ -6,8 +6,7 @@ import 'package:notality/services/notes_service.dart';
 import 'package:notality/widgets/note_card.dart';
 import 'package:swipeable_tile/swipeable_tile.dart';
 
-// Standard FAB size (56) plus its margin (16), so the list can always be
-// scrolled clear of it in addition to the system bottom inset.
+// FAB (56) plus its margin (16).
 const _fabClearance = 88.0;
 
 class NoteList extends StatefulWidget {

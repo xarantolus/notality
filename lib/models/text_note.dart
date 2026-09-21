@@ -11,9 +11,7 @@ String notesFileContentToJson(NotesFileContent data) =>
     json.encode(data.toJson());
 
 class NotesFileContent {
-  NotesFileContent({
-    required this.notes,
-  });
+  NotesFileContent({required this.notes});
 
   List<Note> notes;
 
@@ -23,8 +21,8 @@ class NotesFileContent {
       );
 
   Map<String, dynamic> toJson() => {
-        "notes": List<dynamic>.from(notes.map((x) => x.toJson())),
-      };
+    "notes": List<dynamic>.from(notes.map((x) => x.toJson())),
+  };
 }
 
 class Note {
@@ -36,10 +34,10 @@ class Note {
   });
 
   Note.empty()
-      : type = "text",
-        text = "",
-        title = "",
-        lastEditDate = DateTime.now();
+    : type = "text",
+      text = "",
+      title = "",
+      lastEditDate = DateTime.now();
 
   bool isEmpty() => text.isEmpty && title.isEmpty;
 
@@ -49,16 +47,16 @@ class Note {
   String text;
 
   factory Note.fromJson(Map<String, dynamic> json) => Note(
-        type: json["type"],
-        title: json["title"],
-        lastEditDate: DateTime.parse(json["lastEditDate"]),
-        text: json["text"],
-      );
+    type: json["type"],
+    title: json["title"],
+    lastEditDate: DateTime.parse(json["lastEditDate"]),
+    text: json["text"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "type": type,
-        "title": title,
-        "lastEditDate": lastEditDate.toIso8601String(),
-        "text": text,
-      };
+    "type": type,
+    "title": title,
+    "lastEditDate": lastEditDate.toIso8601String(),
+    "text": text,
+  };
 }

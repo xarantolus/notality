@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notality/l10n/app_localizations.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/screens/note_list.dart';
@@ -23,7 +23,7 @@ void main() {
 }
 
 class NotesApp extends StatelessWidget {
-  NotesApp({Key? key}) : super(key: key) {
+  NotesApp({super.key}) {
     // Load all translation locales
     timeTranslations.forEach((locale, messages) {
       timeago.setLocaleMessages(locale, messages);
@@ -50,10 +50,7 @@ class NotesApp extends StatelessWidget {
           surface: Colors.grey[200],
         ),
         textTheme: Typography.blackHelsinki.copyWith(
-          bodyText2: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 14,
-          ),
+          bodyMedium: TextStyle(color: Colors.grey[600], fontSize: 14),
         ),
       ),
       darkTheme: ThemeData.from(
@@ -64,10 +61,7 @@ class NotesApp extends StatelessWidget {
           surface: Colors.grey[900],
         ),
         textTheme: Typography.whiteHelsinki.copyWith(
-          bodyText2: TextStyle(
-            color: Colors.grey[400],
-            fontSize: 14,
-          ),
+          bodyMedium: TextStyle(color: Colors.grey[400], fontSize: 14),
         ),
       ),
       home: NotesPage(),
@@ -76,7 +70,7 @@ class NotesApp extends StatelessWidget {
 }
 
 class NotesPage extends StatefulWidget {
-  NotesPage({Key? key}) : super(key: key);
+  NotesPage({super.key});
 
   final NotesService service = NotesService();
 
@@ -95,9 +89,11 @@ class _NotesPageState extends State<NotesPage> {
 
   void _createNewNote() async {
     try {
-      var newNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
-        builder: (context) => NoteEditPage(Note.empty(), true),
-      ));
+      var newNote = await Navigator.of(context).push(
+        MaterialPageRoute<Note>(
+          builder: (context) => NoteEditPage(Note.empty(), true),
+        ),
+      );
 
       if (newNote == null) {
         return;
@@ -105,27 +101,29 @@ class _NotesPageState extends State<NotesPage> {
 
       await widget.service.addNote(newNote);
     } catch (e) {
+      if (!mounted) return;
       await _showErrorMessage(context, e);
     }
   }
 
   void _sortNotesByDate() async {
     try {
-      var _notes = await widget.service.readNotes();
+      var notes = await widget.service.readNotes();
 
-      _notes.sort((a, b) {
+      notes.sort((a, b) {
         return b.lastEditDate.compareTo(a.lastEditDate);
       });
 
-      await widget.service.writeNotes(_notes);
+      await widget.service.writeNotes(notes);
     } catch (e) {
+      if (!mounted) return;
       await _showErrorMessage(context, e);
     }
 
     setState(() {});
   }
 
-  Future<void> _showErrorMessage(BuildContext context, dynamic e) async {
+  Future<void> _showErrorMessage(BuildContext context, Object e) async {
     await showDialog(
       context: context,
       builder: (ctx) {
@@ -139,9 +137,9 @@ class _NotesPageState extends State<NotesPage> {
 
   void _exportToFile() async {
     try {
-      var _notes = await widget.service.readNotes();
+      var notes = await widget.service.readNotes();
 
-      var json = notesFileContentToJson(NotesFileContent(notes: _notes));
+      var json = notesFileContentToJson(NotesFileContent(notes: notes));
 
       var now = DateTime.now();
 
@@ -152,19 +150,19 @@ class _NotesPageState extends State<NotesPage> {
         ),
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.exportSuccessful),
-      ));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.exportSuccessful)),
+      );
     } catch (e) {
+      if (!mounted) return;
       await _showErrorMessage(context, e);
     }
   }
 
   void _importFromFile() async {
     var fp = await FlutterFileDialog.pickFile(
-      params: const OpenFileDialogParams(
-        copyFileToCacheDir: true,
-      ),
+      params: const OpenFileDialogParams(copyFileToCacheDir: true),
     );
     if (fp == null) {
       return;
@@ -173,8 +171,10 @@ class _NotesPageState extends State<NotesPage> {
     try {
       var content = await File(fp).readAsString();
 
-      var _notes = notesFileContentFromJson(content).notes;
-      if (_notes.isEmpty) {
+      if (!mounted) return;
+
+      var notes = notesFileContentFromJson(content).notes;
+      if (notes.isEmpty) {
         throw Exception(AppLocalizations.of(context)!.emptyFileImport);
       }
 
@@ -183,9 +183,9 @@ class _NotesPageState extends State<NotesPage> {
         builder: (context) => AlertDialog(
           title: Text(AppLocalizations.of(context)!.import),
           content: Text(
-            _notes.length == 1
+            notes.length == 1
                 ? AppLocalizations.of(context)!.importSingle
-                : AppLocalizations.of(context)!.importMultiple(_notes.length),
+                : AppLocalizations.of(context)!.importMultiple(notes.length),
           ),
           actions: [
             TextButton(
@@ -207,15 +207,18 @@ class _NotesPageState extends State<NotesPage> {
         return;
       }
 
-      await widget.service.writeNotes(_notes);
+      await widget.service.writeNotes(notes);
+
+      if (!mounted) return;
 
       // let the UI reload the notes
       setState(() {});
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.of(context)!.importSuccessful),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.importSuccessful)),
+      );
     } catch (e) {
+      if (!mounted) return;
       await _showErrorMessage(context, e);
     }
   }
@@ -254,7 +257,7 @@ class _NotesPageState extends State<NotesPage> {
                     ),
                   ),
                   onTap: () {},
-                )
+                ),
               ];
             },
           ),
@@ -262,22 +265,22 @@ class _NotesPageState extends State<NotesPage> {
             itemBuilder: (context) {
               return [
                 PopupMenuItem(
+                  onTap: _exportToFile,
                   child: Row(
                     children: [
                       const Icon(Icons.publish),
                       Text(AppLocalizations.of(context)!.exportToFile),
                     ],
                   ),
-                  onTap: _exportToFile,
                 ),
                 PopupMenuItem(
+                  onTap: _importFromFile,
                   child: Row(
                     children: [
                       const Icon(Icons.download),
                       Text(AppLocalizations.of(context)!.importFromFile),
                     ],
                   ),
-                  onTap: _importFromFile,
                 ),
               ];
             },

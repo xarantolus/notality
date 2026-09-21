@@ -1,19 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:notality/l10n/app_localizations.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/widgets/app_bar.dart';
 
 class NoteEditPage extends StatefulWidget {
-  const NoteEditPage(this.note, this.autofocus, {Key? key}) : super(key: key);
+  const NoteEditPage(this.note, this.autofocus, {super.key});
 
   final Note note;
   final bool autofocus;
 
   @override
-  _NoteEditPageState createState() => _NoteEditPageState();
+  State<NoteEditPage> createState() => _NoteEditPageState();
 }
 
 class _NoteEditPageState extends State<NoteEditPage> {
@@ -35,16 +35,16 @@ class _NoteEditPageState extends State<NoteEditPage> {
       _initialText = widget.note.text;
     }
 
-    titleController = TextEditingController.fromValue(TextEditingValue(
-      text: widget.note.title,
-    ));
+    titleController = TextEditingController.fromValue(
+      TextEditingValue(text: widget.note.title),
+    );
     titleController!.addListener(() {
       setState(() {});
     });
 
-    bodyController = TextEditingController.fromValue(TextEditingValue(
-      text: widget.note.text,
-    ));
+    bodyController = TextEditingController.fromValue(
+      TextEditingValue(text: widget.note.text),
+    );
     bodyController!.addListener(() {
       setState(() {});
     });
@@ -83,7 +83,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
       _initialText != bodyController!.text.trim() ||
       titleController!.text.trim() != _initialTitle;
 
-  Future<bool> _onLeave() async {
+  void _onLeave() {
     var newNote = Note(
       type: "text",
       lastEditDate: _noteDate,
@@ -95,12 +95,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
     if (newNote.text.isEmpty && newNote.title.isEmpty || !_hasChanged) {
       Navigator.pop(context, null);
     } else {
-      Navigator.pop(
-        context,
-        newNote,
-      );
+      Navigator.pop(context, newNote);
     }
-    return false;
   }
 
   Future<void> _pickDateAndTime(BuildContext context) async {
@@ -113,11 +109,10 @@ class _NoteEditPageState extends State<NoteEditPage> {
       lastDate: DateTime(now.year + 1, now.month, now.day),
     );
 
+    if (!context.mounted) return;
+
     var tod = TimeOfDay(hour: now.hour, minute: now.minute);
-    var time = await showTimePicker(
-      context: context,
-      initialTime: tod,
-    );
+    var time = await showTimePicker(context: context, initialTime: tod);
 
     // If we clicked behind/cancelled all dialogs
     if (date == null && time == null) {
@@ -127,8 +122,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
     // Construct the date + time from both selected values
     var resultDayAndTime = date ?? DateTime(now.year, now.month, now.day);
     if (time != null) {
-      resultDayAndTime = resultDayAndTime
-          .add(Duration(hours: time.hour, minutes: time.minute));
+      resultDayAndTime = resultDayAndTime.add(
+        Duration(hours: time.hour, minutes: time.minute),
+      );
     }
 
     setState(() {
@@ -146,8 +142,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
         context,
         title: AppLocalizations.of(context)!.editPageTitle,
       ),
-      body: WillPopScope(
-        onWillPop: _onLeave,
+      body: PopScope<Note>(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, Note? result) {
+          if (didPop) return;
+          _onLeave();
+        },
         child: Container(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
           child: Column(
@@ -155,9 +155,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
               TextField(
                 controller: titleController,
                 autofocus: widget.autofocus,
-                style: const TextStyle(
-                  fontSize: 24,
-                ),
+                style: const TextStyle(fontSize: 24),
                 decoration: InputDecoration(
                   hintText: AppLocalizations.of(context)!.titleHint,
                   border: InputBorder.none,
@@ -165,35 +163,31 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 onEditingComplete: () => FocusScope.of(context).nextFocus(),
               ),
               GestureDetector(
+                onTap: () => _pickDateAndTime(context),
                 child: Container(
                   margin: const EdgeInsets.all(8),
+                  alignment: Alignment.centerRight,
                   child: Text(
                     // Show the last edit date
                     formatDate(_noteDate),
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  alignment: Alignment.centerRight,
                 ),
-                onTap: () => _pickDateAndTime(context),
               ),
-              Divider(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
+              Divider(color: Theme.of(context).colorScheme.secondary),
               Expanded(
                 child: TextField(
                   controller: bodyController,
                   maxLines: null,
                   expands: true,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
+                  style: const TextStyle(fontSize: 16),
                   decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.noteHint,
                     border: InputBorder.none,
                   ),
                   keyboardType: TextInputType.multiline,
                 ),
-              )
+              ),
             ],
           ),
         ),

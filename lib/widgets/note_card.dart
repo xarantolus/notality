@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:notality/l10n/app_localizations.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NoteCard extends StatefulWidget {
-  const NoteCard({Key? key, required this.note}) : super(key: key);
+  const NoteCard({super.key, required this.note});
 
   final Note note;
 
   @override
-  _NoteCardState createState() => _NoteCardState();
+  State<NoteCard> createState() => _NoteCardState();
 }
 
 class _NoteCardState extends State<NoteCard> {
@@ -36,25 +36,25 @@ class _NoteCardState extends State<NoteCard> {
 
   Widget titleContainer(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(4),
       child: Text(
         widget.note.title,
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
       ),
-      padding: const EdgeInsets.all(4),
     );
   }
 
   Widget subtitleContainer(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
       child: Text(
         widget.note.text,
         maxLines: 12,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(fontSize: 15),
       ),
-      padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
     );
   }
 

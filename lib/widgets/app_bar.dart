@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class CustomAppBar {
   static AppBar create(
@@ -9,15 +8,8 @@ class CustomAppBar {
     List<Widget>? actions,
     Widget? icon,
   }) {
-    var barColor = Theme.of(context).colorScheme.primary;
-
     return AppBar(
-      backgroundColor: barColor,
       centerTitle: true,
-      systemOverlayStyle: SystemUiOverlayStyle(
-        statusBarColor: barColor,
-        systemNavigationBarColor: barColor,
-      ),
       title: title == null ? null : Text(title, style: titleStyle),
       leading: icon == null
           ? null

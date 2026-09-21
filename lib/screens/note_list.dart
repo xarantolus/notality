@@ -124,7 +124,7 @@ class _NoteListState extends State<NoteList> {
 
       child: Container(
         decoration: ShapeDecoration(
-          color: Theme.of(context).cardColor,
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           shape: shape,
         ),
         child: NoteCard(note: item),

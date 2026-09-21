@@ -30,7 +30,9 @@ class NotesService {
 
   // protectIfNecessary runs criticalSection, locking with fileMutex if lock is true
   Future<T> _protectIfNecessary<T>(
-      Future<T> Function() criticalSection, bool lock) async {
+    Future<T> Function() criticalSection,
+    bool lock,
+  ) async {
     if (lock) {
       return fileMutex.protect(() => criticalSection());
     } else {
@@ -71,7 +73,7 @@ class NotesService {
       var json = notesFileContentToJson(NotesFileContent(notes: _notes!));
 
       // Write data to a temporary file and *only then* rename
-      var tmpFile = File(fp + ".tmp");
+      var tmpFile = File("$fp.tmp");
       await tmpFile.writeAsString(json, flush: true);
 
       await tmpFile.rename(fp);
@@ -128,15 +130,12 @@ class NotesService {
     }, true);
   }
 
+  /// reorderNote moves the note at index `from` so that it ends up at index
+  /// `to` in the resulting list. `to` is the final index, already adjusted
+  /// for the removal of the item at `from`.
   Future<List<Note>> reorderNote(int from, int to) async {
     return await _protectIfNecessary(() async {
       var notes = await readNotes(false);
-
-      // If we move an item lower than it was before, we need to subtract one;
-      // else we put it one position further than we want
-      if (to > from) {
-        to--;
-      }
 
       var note = notes.removeAt(from);
       notes.insert(to, note);

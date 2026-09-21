@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:notality/l10n/app_localizations.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/screens/note_edit.dart';
 import 'package:notality/services/notes_service.dart';
@@ -7,14 +7,14 @@ import 'package:notality/widgets/note_card.dart';
 import 'package:swipeable_tile/swipeable_tile.dart';
 
 class NoteList extends StatefulWidget {
-  NoteList({Key? key}) : super(key: key);
+  NoteList({super.key});
 
   final service = NotesService();
 
   final _listKey = GlobalKey<AnimatedListState>();
 
   @override
-  _NoteListState createState() => _NoteListState();
+  State<NoteList> createState() => _NoteListState();
 }
 
 class _NoteListState extends State<NoteList> {
@@ -33,8 +33,10 @@ class _NoteListState extends State<NoteList> {
     });
 
     widget.service.addRemoveCallback(
-      (index) => widget._listKey.currentState?.removeItem(index,
-          (BuildContext context, Animation<double> animation) {
+      (index) => widget._listKey.currentState?.removeItem(index, (
+        BuildContext context,
+        Animation<double> animation,
+      ) {
         return Container();
       }),
     );
@@ -42,8 +44,9 @@ class _NoteListState extends State<NoteList> {
 
   // _editNote pops up the node editing screen and saves/replaces the note
   void _editNote(int index, Note item) async {
-    var editedNote = await Navigator.of(context).push(MaterialPageRoute<Note>(
-        builder: (context) => NoteEditPage(item, false)));
+    var editedNote = await Navigator.of(context).push(
+      MaterialPageRoute<Note>(builder: (context) => NoteEditPage(item, false)),
+    );
     if (editedNote == null) {
       return;
     }
@@ -53,6 +56,8 @@ class _NoteListState extends State<NoteList> {
 
   Future<void> _deleteNote(int index, BuildContext context, Note item) async {
     await widget.service.deleteNote(index);
+
+    if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -76,14 +81,13 @@ class _NoteListState extends State<NoteList> {
       data: Theme.of(context).copyWith(
         canvasColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        dialogBackgroundColor: Colors.transparent,
+        dialogTheme: const DialogThemeData(backgroundColor: Colors.transparent),
       ),
       child: ReorderableListView.builder(
         physics: const BouncingScrollPhysics(),
         key: widget._listKey,
         itemCount: items.length,
-        onReorder: (int from, int to) async {
+        onReorderItem: (int from, int to) async {
           await widget.service.reorderNote(from, to);
         },
         itemBuilder: (context, index) {
@@ -119,29 +123,19 @@ class _NoteListState extends State<NoteList> {
       direction: SwipeDirection.horizontal,
 
       child: Container(
-        child: NoteCard(note: item),
         decoration: ShapeDecoration(
           color: Theme.of(context).cardColor,
           shape: shape,
         ),
+        child: NoteCard(note: item),
       ),
 
       // The background behind the list item is a trash can
       backgroundBuilder: (context, direction, progress) {
         return Container(
-          child: const Icon(
-            Icons.delete_forever,
-            size: 36,
-          ),
-          padding: const EdgeInsets.only(
-            left: 8,
-            right: 8,
-            top: 6,
-          ),
-          decoration: ShapeDecoration(
-            color: Colors.red,
-            shape: shape,
-          ),
+          padding: const EdgeInsets.only(left: 8, right: 8, top: 6),
+          decoration: ShapeDecoration(color: Colors.red, shape: shape),
+          child: const Icon(Icons.delete_forever, size: 36),
         );
       },
 
@@ -160,7 +154,8 @@ class _NoteListState extends State<NoteList> {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
               return Center(
-                  child: Text(AppLocalizations.of(context)!.emptyListHint));
+                child: Text(AppLocalizations.of(context)!.emptyListHint),
+              );
             } else {
               return _itemList(snapshot.data!);
             }

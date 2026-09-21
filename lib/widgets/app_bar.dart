@@ -18,20 +18,12 @@ class CustomAppBar {
         statusBarColor: barColor,
         systemNavigationBarColor: barColor,
       ),
-      title: title == null
-          ? null
-          : Text(
-              title,
-              style: titleStyle,
-            ),
+      title: title == null ? null : Text(title, style: titleStyle),
       leading: icon == null
           ? null
           : Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Tooltip(
-                message: title ?? "",
-                child: icon,
-              ),
+              child: Tooltip(message: title ?? "", child: icon),
             ),
       actions: actions,
     );

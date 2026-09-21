@@ -30,11 +30,32 @@ class NotesApp extends StatelessWidget {
     });
   }
 
-  static const _themeColor = Color.fromRGBO(0x04, 0x9E, 0x42, 1.0);
-  static const _secondaryColor = Color.fromRGBO(0x05, 0xC6, 0x53, 1.0);
+  static const _seed = Color.fromRGBO(0x04, 0x9E, 0x42, 1.0);
 
-  static const _themeColorDark = Color.fromRGBO(0x03, 0x7F, 0x35, 1.0);
-  static const _secondaryColorDark = Color.fromRGBO(0x03, 0x84, 0x37, 1.0);
+  static ThemeData _themeFor(Brightness brightness) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: _seed,
+      brightness: brightness,
+    );
+    final dark = brightness == Brightness.dark;
+
+    return ThemeData(
+      colorScheme: colorScheme,
+      // The bar is a deep green with light text in both themes. M3 files that
+      // tone under a different role per brightness: primary is the dark one
+      // when the scheme is light, and the pale one when it is dark. Taking
+      // each with its own on-colour keeps the contrast guarantee.
+      appBarTheme: AppBarTheme(
+        backgroundColor: dark
+            ? colorScheme.primaryContainer
+            : colorScheme.primary,
+        foregroundColor: dark
+            ? colorScheme.onPrimaryContainer
+            : colorScheme.onPrimary,
+        centerTitle: true,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,28 +63,8 @@ class NotesApp extends StatelessWidget {
       title: 'Notality',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData.from(
-        colorScheme: const ColorScheme.light().copyWith(
-          brightness: Brightness.light,
-          primary: _themeColor,
-          secondary: _secondaryColor,
-          surface: Colors.grey[200],
-        ),
-        textTheme: Typography.blackHelsinki.copyWith(
-          bodyMedium: TextStyle(color: Colors.grey[600], fontSize: 14),
-        ),
-      ),
-      darkTheme: ThemeData.from(
-        colorScheme: const ColorScheme.dark().copyWith(
-          brightness: Brightness.dark,
-          primary: _themeColorDark,
-          secondary: _secondaryColorDark,
-          surface: Colors.grey[900],
-        ),
-        textTheme: Typography.whiteHelsinki.copyWith(
-          bodyMedium: TextStyle(color: Colors.grey[400], fontSize: 14),
-        ),
-      ),
+      theme: _themeFor(Brightness.light),
+      darkTheme: _themeFor(Brightness.dark),
       home: NotesPage(),
     );
   }

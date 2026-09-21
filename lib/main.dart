@@ -22,8 +22,7 @@ final timeTranslations = <String, timeago.LookupMessages>{
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Opt in to edge-to-edge explicitly so every supported Android version
-  // lays out the same way, rather than only 15+ (which forces it anyway).
+  // Explicit, so API 24-34 lays out like 35+, which forces it regardless.
   unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
 
   runApp(NotesApp());
@@ -39,10 +38,8 @@ class NotesApp extends StatelessWidget {
 
   static const _seed = Color.fromRGBO(0x04, 0x9E, 0x42, 1.0);
 
-  /// The app bar states its green rather than taking a role from the scheme.
-  /// M3 derives a tonal palette from the seed, and every tone it offers is
-  /// either desaturated or, in a dark scheme, pale enough to sit as a bright
-  /// block above a dark page.
+  /// Stated rather than taken from the scheme: the tones M3 derives are either
+  /// desaturated or, in a dark scheme, pale enough to glare above a dark page.
   static const _barColor = _seed;
   static const _barColorDark = Color.fromRGBO(0x03, 0x7F, 0x35, 1.0);
 
@@ -57,8 +54,6 @@ class NotesApp extends StatelessWidget {
       colorScheme: colorScheme,
       appBarTheme: AppBarTheme(
         backgroundColor: dark ? _barColorDark : _barColor,
-        // White clears 3:1 on both greens, which is the bar for the large
-        // title and the icons; nothing small is drawn on the bar.
         foregroundColor: Colors.white,
         centerTitle: true,
       ),

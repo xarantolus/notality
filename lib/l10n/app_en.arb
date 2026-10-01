@@ -26,6 +26,8 @@
   "importSingle": "One note will be imported. All other notes will be overwritten.",
   "importSuccessful": "Successfully imported new notes",
   "noteHint": "Note",
+  "noteSavedAsFile": "Saved note as text file",
+  "saveAsTextFile": "Save as text file",
   "sortByDate": "Sort by date",
   "sortNotesToolTip": "Sort notes",
   "titleHint": "Title"

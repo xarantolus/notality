@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:notality/l10n/app_localizations.dart';
+import 'package:notality/models/note_text.dart';
 import 'package:notality/models/text_note.dart';
 import 'package:notality/widgets/app_bar.dart';
 
@@ -135,12 +139,59 @@ class _NoteEditPageState extends State<NoteEditPage> {
   DateTime get _noteDate =>
       _hasChanged ? (editedDate ?? DateTime.now()) : widget.note.lastEditDate;
 
+  bool get _hasContentToSave =>
+      titleController!.text.trim().isNotEmpty ||
+      bodyController!.text.trim().isNotEmpty;
+
+  Future<void> _saveAsTextFile() async {
+    final title = titleController!.text.trim();
+    final body = bodyController!.text.trim();
+
+    try {
+      final path = await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(
+          fileName: noteFileName(title, _noteDate),
+          data: Uint8List.fromList(utf8.encode(noteAsText(title, body))),
+          mimeTypesFilter: ['text/plain'],
+        ),
+      );
+
+      if (!mounted) return;
+
+      if (path == null) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.noteSavedAsFile)),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      await showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.errorTitle),
+            content: Text(e.toString()),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar.create(
         context,
         title: AppLocalizations.of(context)!.editPageTitle,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.save_alt),
+            tooltip: AppLocalizations.of(context)!.saveAsTextFile,
+            onPressed: _hasContentToSave ? _saveAsTextFile : null,
+          ),
+        ],
       ),
       body: PopScope<Note>(
         canPop: false,

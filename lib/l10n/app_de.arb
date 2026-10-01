@@ -18,6 +18,8 @@
   "importSingle": "Eine Notiz wird importiert. Alle vorhandenen Notizen werden überschrieben.",
   "importSuccessful": "Import war erfolgreich.",
   "noteHint": "Notiz",
+  "noteSavedAsFile": "Notiz als Textdatei gespeichert",
+  "saveAsTextFile": "Als Textdatei speichern",
   "sortByDate": "Nach Datum sortieren",
   "sortNotesToolTip": "Notizen sortieren",
   "titleHint": "Titel"
